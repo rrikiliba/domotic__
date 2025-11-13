@@ -46,7 +46,7 @@ else:
             index = st.session_state['available_models'].index(st.session_state['selected_model'])
             st.selectbox('Who would you like to chat with today?', st.session_state['available_models'], format_func=model_name_format_func, index=index, key='selected_model')
         with cols[1]:
-            with st.popover(':material/question_mark:', disabled='description' not in st.session_state['selected_model'] or st.session_state['selected_model']['description'] is None or len(st.session_state['selected_model']['description']) == 0):
+            with st.popover(':material/question_mark:', use_container_width=True, disabled='description' not in st.session_state['selected_model'] or st.session_state['selected_model']['description'] is None or len(st.session_state['selected_model']['description']) == 0):
                 if 'description' in st.session_state['selected_model']:
                     st.write(st.session_state['selected_model']['description'])
 
