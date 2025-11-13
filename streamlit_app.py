@@ -41,10 +41,14 @@ else:
         st.session_state['selected_model'] = st.session_state['available_models'][0]
 
     with st.container(border=True):
-        index = st.session_state['available_models'].index(st.session_state['selected_model'])
-        st.selectbox('Who would you like to chat with today?', st.session_state['available_models'], format_func=model_name_format_func, index=index, key='selected_model')
-        if 'description' in st.session_state['selected_model']:
-            st.info(st.session_state['selected_model']['description'])
+        cols = st.columns([0.8, 0.2], vertical_alignment='bottom')
+        with cols[0]:
+            index = st.session_state['available_models'].index(st.session_state['selected_model'])
+            st.selectbox('Who would you like to chat with today?', st.session_state['available_models'], format_func=model_name_format_func, index=index, key='selected_model')
+        with cols[1]:
+            with st.popover(':material/question_mark:', disabled='description' not in st.session_state['selected_model'] or st.session_state['selected_model']['description'] is None or len(st.session_state['selected_model']['description']) == 0):
+                if 'description' in st.session_state['selected_model']:
+                    st.write(st.session_state['selected_model']['description'])
 
     # Display the existing chat messages via `st.chat_message`.
     for message in st.session_state.messages:
@@ -53,7 +57,7 @@ else:
 
     # Create a chat input field to allow the user to enter a message. This will display
     # automatically at the bottom of the page.
-    if prompt := st.chat_input(f'Now chatting with {st.session_state["selected_model"]["name"].replace("(free)", "").split(": ")[1]}'):
+    if prompt := st.chat_input('Ask your questions here:'):
 
         # Store and display the current prompt.
         st.session_state.messages.append({"role": "user", "content": prompt})
@@ -88,5 +92,7 @@ else:
         # Stream the response to the chat using `st.write_stream`, then store it in 
         # session state.
         with st.chat_message("assistant"):
-            response = st.write_stream(stream)
+            model_signature = f'''  
+            :gray[*answered by {model_name_format_func(st.session_state["selected_model"]).split(", from")[0]}*]'''
+            response = st.write_stream(stream) + model_signature
         st.session_state.messages.append({"role": "assistant", "content": response})
