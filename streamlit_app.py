@@ -41,14 +41,10 @@ else:
         st.session_state['selected_model'] = st.session_state['available_models'][0]
 
     with st.container(border=True):
-        cols = st.columns(2)
-        with cols[0]:
-            st.write('Who would you like to chat with today?')
-        with cols[1]:
-            index = st.session_state['available_models'].index(st.session_state['selected_model'])
-            st.selectbox('model_select', st.session_state['available_models'], format_func=model_name_format_func, index=index, label_visibility='hidden', key='selected_model')
-            if 'description' in st.session_state['selected_model']:
-                st.info(st.session_state['selected_model']['description'])
+        index = st.session_state['available_models'].index(st.session_state['selected_model'])
+        st.selectbox('Who would you like to chat with today?', st.session_state['available_models'], format_func=model_name_format_func, index=index, key='selected_model')
+        if 'description' in st.session_state['selected_model']:
+            st.info(st.session_state['selected_model']['description'])
 
     # Display the existing chat messages via `st.chat_message`.
     for message in st.session_state.messages:
