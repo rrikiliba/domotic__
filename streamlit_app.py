@@ -8,6 +8,13 @@ def model_name_format_func(item):
         return f'{item[1]}, from {item[0]}'
     else: 
         return item[0]
+
+# Load csv 
+if 'csv_content' not in st.session_state:
+    st.session_state['csv_content'] = None
+    with open('PO_Offerte_E_PLACET_20251113.csv') as csv_file:
+        st.session_state['csv_content'] = csv_file.read()
+
 # Show title and description.
 st.title("Welcome to Domotic__")
 
@@ -69,6 +76,20 @@ else:
                     "role": m["role"], 
                     "content": m["content"]
                 } for m in st.session_state.messages]
+        
+        if st.session_state['csv_content'] is not None:
+            csv_messages = [
+            {
+                'role': 'system',
+                'content': 'Use the data about available offers from the following csv file to aid in your responses.'
+            },
+            {
+                'role': 'system',
+                'content': st.session_state['csv_content']
+            }
+            ]
+            messages = csv_messages + messages
+
         # Generate a response using the OpenAI API.
         stream = client.chat.completions.create(
             model=st.session_state['selected_model']['id'],
@@ -80,10 +101,6 @@ else:
                     "role": "system",
                     "content": "You must dismiss questions unrelated to electricity bills, power plans, appliances and general home electricity consumption."
                 },
-                #{
-                #    "role": "system",
-                #    "content": csv_str
-                #},
                 *messages
             ],
             stream=True,
