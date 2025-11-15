@@ -4,6 +4,9 @@ import requests
 import base64
 import json
 
+def encode_pdf():
+    return base64.b64encode(st.session_state['pdf_file'].getvalue()).decode('utf-8')
+
 def openrouter_request(**kwargs):
     return requests.post(
         url='https://openrouter.ai/api/v1/chat/completions', 
@@ -28,10 +31,6 @@ def upload_bill():
         model=st.session_state['pdf_model']['id'],
         messages=[
             {
-                "role": "system",
-                "content": "You are a helpful assistant. You are expert on electricity bills, power consumption etc. The user may ask questions related to this area."
-            },
-            {
                 "role": "user",
                 "content": [
                     {
@@ -42,7 +41,7 @@ def upload_bill():
                         "type": "file",
                         "file": {
                             "filename": "document.pdf",
-                            "file_data": base64.b64encode(st.session_state['pdf_file'].getvalue()).decode('utf-8')
+                            "file_data": f"data:application/pdf;base64,{encode_pdf()}"
                         }
                     },
                 ]
@@ -60,15 +59,6 @@ def upload_bill():
         ],
         ).json()
         st.session_state['pdf_content'] = json.dumps(res)
-
-        # TODO: fix issue with pdf parsing
-        # if you uncomment this line you will see that the pdf is not being parsed at all
-        # st.json(res)
-
-        # the request is sent as per documentation: https://openrouter.ai/docs/features/multimodal/pdfs        
-        # and, on the same page, it says the pdf engine works with any model
-        # so I have no clue of why it is not working, for now
-
 
 if 'OPENROUTER_API_KEY' not in st.secrets or st.secrets['OPENROUTER_API_KEY'] is None: 
     st.error("The OpenRouter API key is missing from the app's secrets! Please contact an administrator.", icon="🗝️")
