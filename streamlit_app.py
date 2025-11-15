@@ -120,6 +120,13 @@ with st.sidebar:
         if 'pdf_model' in st.session_state and st.session_state['pdf_model'] is not None and 'pdf_file' in st.session_state and st.session_state['pdf_file'] is not None:
             st.write(f':gray[*this file has been analyzed by {model_name_format_func(st.session_state["selected_model"]).split(", from")[0]}*]')
 
+    with st.container(border=True):
+        st.write('Give us your opinion on this chat:')
+        rating = st.feedback('faces', width='stretch')
+        # not collected for now 
+
+    if rating is not None:
+        st.info('Thank you for your feedback, we really value your opinion.')
 
 # Display the existing chat messages via `st.chat_message`.
 for message in st.session_state.messages:
@@ -187,6 +194,6 @@ if prompt := st.chat_input('Ask your questions here:'):
     # session state.
     with st.chat_message("assistant"):
         model_signature = f'''  
-        :gray[*answered by {model_name_format_func(st.session_state["selected_model"]).split(", from")[0]}*]'''
+:gray[*answered by {model_name_format_func(st.session_state["selected_model"]).split(", from")[0]}*]'''
         response = st.write_stream(stream) + model_signature
     st.session_state.messages.append({"role": "assistant", "content": response})
