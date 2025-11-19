@@ -1,2 +1,7 @@
 streamlit
 openai
+pdfplumber
+plotly
+pandas
+python-dotenv
+plotly>=5.18.0
