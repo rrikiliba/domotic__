@@ -1,0 +1,43 @@
+[theme]
+# ----------------------------------------------------------
+# GLOBAL SETTINGS
+# ----------------------------------------------------------
+# Default theme base
+base = "dark"
+
+# Global font family
+font = "sans serif"
+
+# ----------------------------------------------------------
+# LIGHT THEME CONFIGURATION
+# ----------------------------------------------------------
+[theme.light]
+# Main Content Area (Clean & Professional for Bill Reading)
+primaryColor = "#2ECC71"       # Electric Emerald
+backgroundColor = "#FFFFFF"    # Pure White
+textColor = "#31333F"          # Standard Charcoal
+borderColor = "#E0E0E0"        # Light Grey
+
+    # "FUNKY" LIGHT SIDEBAR (Mint & Eco)
+    [theme.light.sidebar]
+    backgroundColor = "#E8F6F3"  # Very pale mint green
+    textColor = "#145A32"        # Dark Forest Green text
+    borderColor = "#A2D9CE"      # Distinct Teal border
+    primaryColor = "#1ABC9C"     # Turquoise highlights
+
+# ----------------------------------------------------------
+# DARK THEME CONFIGURATION
+# ----------------------------------------------------------
+[theme.dark]
+# Main Content Area (High Contrast AI Dashboard)
+primaryColor = "#2ECC71"       # Electric Emerald
+backgroundColor = "#0E1117"    # Deep Dashboard Black
+textColor = "#FAFAFA"          # Off-white
+borderColor = "#464B5C"        # Muted Blue-Grey
+
+    # "FUNKY" DARK SIDEBAR (Cyber-Grid)
+    [theme.dark.sidebar]
+    backgroundColor = "#15192B"  # A slightly purple-tinted midnight blue
+    textColor = "#D6EAF8"        # Pale blue text (Sci-fi terminal style)
+    borderColor = "#5DADE2"      # Electric Blue borders
+    primaryColor = "#F1C40F"     # 'High Voltage' Yellow highlights
