@@ -1,6 +1,5 @@
 import streamlit as st
 from utils import model_name_format, stream_generator
-    
 
 # Display the existing chat messages via `st.chat_message`.
 for message in st.session_state.messages:
@@ -83,3 +82,11 @@ if prompt := st.chat_input('Ask your questions here:'):
     except Exception as e:
         with latest_message_assistant:
             st.error(e)
+
+st.markdown("""
+<style>
+.stBottom {
+    bottom: 5em;
+}
+</style>
+""", unsafe_allow_html=True)

@@ -2,10 +2,9 @@ import streamlit as st
 
 st.set_page_config(layout="wide")
 
-st.title("💡 Welcome to Domotic__", anchor=None, help=None)
-st.markdown("#### Your portal for energy monitoring and bill analysis.")
+st.session_state['homepage_visited'] = False
 st.markdown("Here's what we can help with:")
-st.markdown("---")
+
 
 # Helper function to handle navigation from the landing page
 def navigate_to(page_path):

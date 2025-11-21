@@ -5,7 +5,7 @@ import requests
 
 
 pages = [
-    st.Page('./pages/homepage.py', title='home', icon='😄', url_path='home', default=True),
+    st.Page('./pages/homepage.py', title='Visit our homepage', icon='💡', url_path='home', default=True),
     st.Page('./pages/analyze.py', title='Analyze your electricity bill', icon='📑', url_path='analyze'),
     st.Page('./pages/chat.py', title='Chat with Domitico', icon='💬', url_path='chat'),
     st.Page('./pages/overview.py', title='Offers overview', icon='📊', url_path='overview'),
@@ -21,7 +21,7 @@ elif 'openai_client' not in st.session_state:
 if 'homepage_visited' not in st.session_state:
     page = st.navigation(pages, position='hidden')
 else:
-    page = st.navigation(pages[1:])
+    page = st.navigation(pages)
     
 st.set_page_config(page_title="Domotic__", page_icon="", layout='centered' if page.url_path == 'chat' else 'wide')
 
@@ -46,7 +46,7 @@ if "messages" not in st.session_state:
         }
     ]
 
-if 'homepage_visited' in st.session_state:
+if 'homepage_visited' in st.session_state and st.session_state['homepage_visited']:
     with st.sidebar:
         # Display model switch
         if 'available_models' not in st.session_state:
@@ -81,4 +81,8 @@ if 'homepage_visited' in st.session_state:
         if rating is not None:
             st.info('Thank you for your feedback, we really value your opinion.')
 
+from elements import footer, header
+
+header.load()
+footer.load()
 page.run() 
