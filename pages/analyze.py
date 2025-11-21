@@ -15,6 +15,6 @@ def upload_bill():
         print(st.session_state['pdf_content'])
 
 with st.container(border=True):
-    st.file_uploader('Upload your bill for ore personalized results', accept_multiple_files=False, key='pdf_file', on_change=upload_bill, type='pdf')
+    st.file_uploader('Upload your bill for more personalized results', accept_multiple_files=False, key='pdf_file', on_change=upload_bill, type='pdf')
     if 'pdf_model' in st.session_state and st.session_state['pdf_model'] is not None and 'pdf_file' in st.session_state and st.session_state['pdf_file'] is not None:
         st.write(f':gray[*this file has been analyzed by {model_name_format(st.session_state["selected_model"]).split(", from")[0]}*]')
