@@ -29,7 +29,7 @@ st.set_page_config(page_title="Domotic__", page_icon="", layout='centered' if pa
 if 'csv_content' not in st.session_state:
     st.session_state['csv_content'] = None
     # TODO: obtain and manage latest offers directly from portale offerte
-    with open('PO_Offerte_E_PLACET_20251113.csv') as csv_file:
+    with open('assets/offers/PO_Offerte_E_PLACET_20251113.csv') as csv_file:
         st.session_state['csv_content'] = csv_file.read()
 
 # Initialize pdf
