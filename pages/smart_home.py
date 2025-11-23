@@ -42,6 +42,7 @@ def get_placeholder_json():
 
 if 'energy_data' not in st.session_state:
     st.session_state['energy_data'] = None
+    st.session_state['placeholder_data'] = get_placeholder_json()
 
 with st.container(border=True):
     st.markdown("""
@@ -56,7 +57,7 @@ with st.container(border=True):
     tab1, tab2, tab3 = st.tabs(["🔌 Domotic Hub", "🛠️ Do It Yourself", "🧪 Test the System"])
 
     with tab1:
-        col1, col2 = st.columns([1, 1], gap="large", vertical_alignment="center")
+        col1, col2 = st.columns([1, 1], gap="large", vertical_alignment="top")
         
         with col1:
             st.subheader("The Domotic Hub")
@@ -85,7 +86,7 @@ with st.container(border=True):
 
 
     with tab2:
-        col1, col2 = st.columns([1, 1], gap="large", vertical_alignment="center")
+        col1, col2 = st.columns([1, 1], gap="large", vertical_alignment="top")
         
         with col1:
             st.subheader("The DIY Edition")
@@ -111,36 +112,44 @@ with st.container(border=True):
 
 
     with tab3:
-        col1, col2 = st.columns([1, 1], gap="large", vertical_alignment="center")
+        col1, col2 = st.columns([1, 1], gap="large", vertical_alignment="top")
         
         with col1:
             st.subheader("Simulate Your Data")
             st.markdown("""
             **:green[Don't have the hardware yet?]**
             
-            You can test the dashboard visualization capabilities right now. 
-            Simply paste a JSON energy report in the text area on the right. 
+            You can :green[test the dashboard] visualization capabilities right now. 
+            Simply press :green[**Edit**] and mjodify or paste a JSON energy report in the text area. 
             
             We have pre-filled it with sample data for you to try immediately. 
-            Just click **Analyze** to see the graph below.
+            Just click :green[**Analyze**] to see our report below.
             """)
             
         with col2:
-            json_input = st.text_area(
-                "Paste Energy Report (JSON)",
-                value=get_placeholder_json(),
-                height=300, 
-                label_visibility="collapsed"
-            )
+            with st.container(height=300, border=False):
+                st.json(st.session_state['placeholder_data'], expanded=3)
+
+            btn_col1, btn_col2 = st.columns([1, 1], gap="small")
             
-            if st.button("📊 Analyze Energy Report", type="primary", use_container_width=True):
-                try:
-                    parsed_data = json.loads(json_input)
-                    st.session_state['energy_data'] = parsed_data
-                    st.session_state['energy_comment'] = None
-                    st.rerun()
-                except json.JSONDecodeError:
-                    st.error("Invalid JSON format. Please check your input.")
+            with btn_col1:
+                with st.popover("📝 Edit", use_container_width=True):
+                    st.text_area(
+                        "Paste Energy Report (JSON)",
+                        key='placeholder_data',
+                        height=250,
+                        label_visibility="collapsed"
+                    )
+            
+            with btn_col2:
+                if st.button("📊 Analyze", type="primary", use_container_width=True):
+                    try:
+                        parsed_data = json.loads(st.session_state['placeholder_data'])
+                        st.session_state['energy_data'] = parsed_data
+                        st.session_state['energy_comment'] = None
+                        st.rerun()
+                    except json.JSONDecodeError:
+                        st.error("Invalid JSON format.")
 
 if st.session_state['energy_data']:
     st.divider()
@@ -172,7 +181,21 @@ if st.session_state['energy_data']:
             st.subheader("📝 Energy Report Summary")
         with col_sum2:
             st.metric(label="Total 24h Load", value=f"{total_consumption:.2f} kWh")
+        energy_comment = st.empty()
 
+
+    with st.container(border=True):
+        st.subheader("Hourly Consumption per Device")
+        st.bar_chart(
+            data=df,
+            x="Hour",
+            y="Consumption (kWh)",
+            color="Device",
+            stack=True,
+            height=400
+        )
+
+    with energy_comment:
         if 'energy_comment' not in st.session_state or st.session_state['energy_comment'] == None:
             try:
                 stream = st.session_state.client.chat.send(
@@ -195,24 +218,12 @@ if st.session_state['energy_data']:
         else:
             st.write(st.session_state['energy_comment'])
 
-
-    with st.container(border=True):
-        st.subheader("Hourly Consumption per Device")
-        st.bar_chart(
-            data=df,
-            x="Hour",
-            y="Consumption (kWh)",
-            color="Device",
-            stack=True,
-            height=400
-        )
-
 st.markdown("""
-    <style>
-    div[data-testid="stImage"] img {
-        height: 300px !important;
-        object-fit: cover !important;
-        border-radius: 8px;
-    }
-    </style>
-    """, unsafe_allow_html=True)
+<style>
+div[data-testid="stImage"] img {
+    height: 300px !important;
+    object-fit: cover !important;
+    border-radius: 8px;
+}
+</style>
+""", unsafe_allow_html=True)
