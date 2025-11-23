@@ -2,8 +2,9 @@ import streamlit as st
 from streamlit_theme import st_theme
 
 def load():
-    theme = st_theme(adjust=True)
-    st.markdown(f"""<style>
+    theme = st_theme()
+    try:
+        st.markdown(f"""<style>
 .footer a:link , a:visited{{
 color: blue;
 background-color: transparent;
@@ -21,7 +22,7 @@ position: fixed;
 left: 0;
 bottom: 0;
 width: 100%;
-background-color: {theme['lightenedBg05']};
+background-color: {theme['secondaryBackgroundColor']};
 color: {theme['textColor']};
 text-align: center;
 padding-top: 25px;
@@ -37,3 +38,5 @@ z-index: 9999;
     consultare direttamente il sito del fornitore o il Portale Offerte ARERA.</p>
 </div>
 """,unsafe_allow_html=True)
+    except: 
+        pass

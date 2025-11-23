@@ -18,10 +18,10 @@ if 'OPENROUTER_API_KEY' not in st.secrets or st.secrets['OPENROUTER_API_KEY'] is
 elif 'openai_client' not in st.session_state:
     st.session_state.client = OpenRouter(api_key=st.secrets['OPENROUTER_API_KEY'])
 
-if 'homepage_visited' not in st.session_state:
-    page = st.navigation(pages, position='hidden')
+if 'homepage_visited' in st.session_state and st.session_state['homepage_visited']:
+    page = st.navigation(pages[1:])
 else:
-    page = st.navigation(pages)
+    page = st.navigation(pages, position='hidden')
     
 st.set_page_config(page_title="Domotic__", page_icon="", layout='centered' if page.url_path == 'chat' else 'wide')
 
@@ -84,5 +84,5 @@ if 'homepage_visited' in st.session_state and st.session_state['homepage_visited
 from elements import footer, header
 
 header.load()
-footer.load()
 page.run() 
+footer.load()
