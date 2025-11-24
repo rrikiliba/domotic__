@@ -3,8 +3,11 @@ import requests
 import base64
 import json
 
+
 def pdf_request(model, data, **kwargs) -> dict:
     ''' Placeholder until the Python OpenRouter SDK implements the pdf reading functionality natively.'''
+
+    fields_to_extract = ["Codice offerta", "Consumo annuo", "TOTALE BOLLETTA" ]
     response = requests.post(
         url='https://openrouter.ai/api/v1/chat/completions', 
         headers={
@@ -19,7 +22,9 @@ def pdf_request(model, data, **kwargs) -> dict:
                     "content": [
                         {
                             "type": "text",
-                            "text": "Create a summary of the most important information about this electricity bill, in syntactically correct json format."
+                            "text": "Create a summary of the most important information about this electricity bill, in syntactically correct json format."+
+                            f"You must include ONLY these fields: {fields_to_extract}. Ignore every other information"+
+                            "Format the name of the field in a snake_case way and with proper capitalization."
                         },
                         {
                             "type": "file",
@@ -46,5 +51,5 @@ def pdf_request(model, data, **kwargs) -> dict:
             **kwargs
         }
     ).json()
-    # print(json.dumps(response, indent=4))
-    return response['choices'][0]['message']['content']
+    content = response['choices'][0]['message']['content']
+    return json.loads(content)

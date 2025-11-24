@@ -6,13 +6,16 @@ def upload_bill():
     if 'pdf_file' in st.session_state and st.session_state['pdf_file'] is not None:
         st.session_state['pdf_model'] = st.session_state['selected_model']
         try:
-            res = pdf_request(st.session_state['pdf_model'], st.session_state['pdf_file'].getvalue())
-            st.session_state['pdf_content'] = json.dumps(res)
+            with st.spinner(text="Analyzing your bill. Please wait.", show_time=True):
+                res = pdf_request(st.session_state['pdf_model'], st.session_state['pdf_file'].getvalue())
+                st.session_state['pdf_content'] = json.dumps(res)
+            st.toast("Bill succesfully analyzed", duration=1)
         except KeyError:
             st.error('Our chatbot couldn\'t analyze your pdf.')
         except Exception as e:
             st.error(e)
-        print(st.session_state['pdf_content'])
+        with open("./parsed_bill.json", "w+") as f:
+            f.write(json.dumps(json.loads(st.session_state['pdf_content']), indent=4))
 
 with st.container(border=True):
     st.file_uploader('Upload your bill for more personalized results', accept_multiple_files=False, key='pdf_file', on_change=upload_bill, type='pdf')
