@@ -2,7 +2,7 @@ import streamlit as st
 from openrouter import OpenRouter
 from utils import model_name_format, Cache
 import requests
-
+from streamlit.components.v1 import html
 
 pages = [
     st.Page('./pages/homepage.py', title='Visit our homepage', icon='💡', url_path='home', default=True),
@@ -83,7 +83,7 @@ if 'homepage_visited' in cache and cache['homepage_visited']:
 
 from elements import footer, header
 
-st.markdown('''<!-- Google tag (gtag.js) -->
+html('''<!-- Google tag (gtag.js) -->
     <script async src="https://www.googletagmanager.com/gtag/js?id=G-GNPF46MXLJ"></script>
     <script>
       window.dataLayer = window.dataLayer || [];
@@ -91,7 +91,7 @@ st.markdown('''<!-- Google tag (gtag.js) -->
       gtag('js', new Date());
     
       gtag('config', 'G-GNPF46MXLJ');
-    </script>''', unsafe_allow_html=True)
+    </script>''')
 header.load()
 page.run() 
 footer.load()
