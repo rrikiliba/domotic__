@@ -52,6 +52,7 @@ if 'homepage_visited' in cache and cache['homepage_visited']:
         if 'available_models' not in cache:
             models = requests.get('https://openrouter.ai/api/v1/models/user', headers={'Authorization': f'Bearer {st.secrets["OPENROUTER_API_KEY"]}'}).json()['data']
             models = list(filter(lambda model:model['id'].endswith(':free'), models))
+            models = list(filter(lambda model:"structured_outputs" in model['supported_parameters'], models))
             cache['available_models'] = models
 
         with st.container(border=True):

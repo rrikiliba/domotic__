@@ -4,9 +4,19 @@ import base64
 import json
 
 
-def pdf_request(model, data, fields_to_extract:list[str], labels_to_save:list[str], **kwargs) -> dict:
+def pdf_request(model, data, **kwargs) -> dict:
     ''' Placeholder until the Python OpenRouter SDK implements the pdf reading functionality natively.'''
 
+
+    fields_to_extract = [
+        "Tipologia di cliente",
+        "Consumo annuo",
+        "Comune di fornitura",
+        "Prezzo bolletta totale",
+        "Importo canone televisione per uso privato",
+        "Potenza impegnata"
+    ] #also change json_schema in reqeust
+    
     response = requests.post(
         url='https://openrouter.ai/api/v1/chat/completions', 
         headers={
@@ -25,8 +35,7 @@ def pdf_request(model, data, fields_to_extract:list[str], labels_to_save:list[st
                             "You must include ONLY these fields: "+ ", ".join(fields_to_extract)+
                             "Do NOT include units. Name the fields EXACTLY as the request."+
                             "Numbers must be treated as number. If there is a decimal number, separate with a dot"+
-                            "The kind of client MUST be either 'Private' or 'Business'"+
-                            "Save the fields with these labels: "+ ", ".join(labels_to_save)
+                            "The kind of client MUST be either 'Private' or 'Business'"
                         },
                         {
                             "type": "file",
@@ -40,7 +49,43 @@ def pdf_request(model, data, fields_to_extract:list[str], labels_to_save:list[st
             ],
             'stream': False,
             'response_format': {
-                'type': 'json_object'
+                'type': 'json_schema',
+                "json_schema": {
+                    "name": "Bill analsys",
+                    "strict": True,
+                    "schema": {
+                        "type": "object",
+                        "properties": {
+                            "client_type": {
+                                "type": "string",
+                                "description": "Either 'Private' or 'Business'"
+                            },
+                            "annual_consume": {
+                                "type": "number",
+                                "description": "Consumo annuo"
+                            },
+                            "city": {
+                                "type": "string",
+                                "description": "città di fornitura"
+                            },
+                            "price_with_tv": {
+                                "type": "number",
+                                "description": "Raw price of the bill"
+                            },
+                            "tv_price": {
+                                "type": "number",
+                                "description": "Price of canone tv"
+                            },
+                            "potenza_impegnata": {
+                                "type": "number",
+                                "description": "Potenza impeganta"
+                            }
+                        },
+                        "required": ["client_type", "annual_consume", "city",
+                                    "price_with_tv","tv_price", "potenza_impegnata"],
+                        "additionalProperties": False
+                    }
+                }
             },
             'plugins': [
                 {
