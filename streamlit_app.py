@@ -46,14 +46,14 @@ if 'messages' not in cache:
         }
     ]
 
+if 'available_models' not in cache:
+    models = requests.get('https://openrouter.ai/api/v1/models/user', headers={'Authorization': f'Bearer {st.secrets["OPENROUTER_API_KEY"]}'}).json()['data']
+    models = list(filter(lambda model:model['id'].endswith(':free'), models))
+    cache['available_models'] = models
+
 if 'homepage_visited' in cache and cache['homepage_visited']:
     with st.sidebar:
         # Display model switch
-        if 'available_models' not in cache:
-            models = requests.get('https://openrouter.ai/api/v1/models/user', headers={'Authorization': f'Bearer {st.secrets["OPENROUTER_API_KEY"]}'}).json()['data']
-            models = list(filter(lambda model:model['id'].endswith(':free'), models))
-            cache['available_models'] = models
-
         with st.container(border=True):
             cols = st.columns([0.8, 0.2], vertical_alignment='bottom')
             with cols[0]:
@@ -82,7 +82,6 @@ if 'homepage_visited' in cache and cache['homepage_visited']:
             st.info('Thank you for your feedback, we really value your opinion.')
 
 from elements import footer, header
-
 
 header.load()
 page.run() 

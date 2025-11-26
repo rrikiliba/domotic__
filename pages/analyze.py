@@ -4,6 +4,8 @@ import json
 
 cache = Cache()
 
+cache['homepage_visited'] = True
+
 def json_has_correct_field(json_bill:dict, fields_to_check: list[str]) -> bool:
     try:
         return all([json_bill.get(field, False) for field in fields_to_check])

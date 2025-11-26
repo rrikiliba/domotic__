@@ -7,6 +7,8 @@ from utils import stream_generator, Cache
 
 cache = Cache()
 
+cache['homepage_visited'] = True
+
 def get_placeholder_json():
     """
     Generates a JSON representing hourly energy consumption for 4 devices over the past 24 hours.

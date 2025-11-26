@@ -3,6 +3,8 @@ from utils import model_name_format, stream_generator, Cache
 
 cache = Cache()
 
+cache['homepage_visited'] = True
+
 # Display the existing chat messages via `st.chat_message`.
 for message in cache['messages']:
     with st.chat_message(message["role"]):
