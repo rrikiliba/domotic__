@@ -22,7 +22,7 @@ def pdf_request(model, data, fields_to_extract:list[str], **kwargs) -> dict:
                         {
                             "type": "text",
                             "text": "Create a summary of the information about this electricity bill, in syntactically correct json format."+
-                            f"You must include ONLY these fields: {", ".join(fields_to_extract)}. "+
+                            "You must include ONLY these fields: "+ ", ".join(fields_to_extract)+
                             "Do NOT include units. Name the fields EXACTLY as the request."+
                             "Numbers must be treated as number. If there is a decimal number, separate with a dot"+
                             "The kind of client MUST be either 'Private' or 'Business'"
