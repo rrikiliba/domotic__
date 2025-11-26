@@ -4,10 +4,9 @@ import base64
 import json
 
 
-def pdf_request(model, data, **kwargs) -> dict:
+def pdf_request(model, data, fields_to_extract:list[str], **kwargs) -> dict:
     ''' Placeholder until the Python OpenRouter SDK implements the pdf reading functionality natively.'''
 
-    fields_to_extract = ["Codice offerta", "Consumo annuo", "TOTALE BOLLETTA" ]
     response = requests.post(
         url='https://openrouter.ai/api/v1/chat/completions', 
         headers={
@@ -22,9 +21,11 @@ def pdf_request(model, data, **kwargs) -> dict:
                     "content": [
                         {
                             "type": "text",
-                            "text": "Create a summary of the most important information about this electricity bill, in syntactically correct json format."+
-                            f"You must include ONLY these fields: {fields_to_extract}. Ignore every other information"+
-                            "Format the name of the field in a snake_case way and with proper capitalization."
+                            "text": "Create a summary of the information about this electricity bill, in syntactically correct json format."+
+                            f"You must include ONLY these fields: {", ".join(fields_to_extract)}. "+
+                            "Do NOT include units. Name the fields EXACTLY as the request."+
+                            "Numbers must be treated as number. If there is a decimal number, separate with a dot"+
+                            "The kind of client MUST be either 'Private' or 'Business'"
                         },
                         {
                             "type": "file",
@@ -51,5 +52,6 @@ def pdf_request(model, data, **kwargs) -> dict:
             **kwargs
         }
     ).json()
-    content = response['choices'][0]['message']['content']
-    return json.loads(content)
+    # with open("./tmp.json", mode="a") as f:
+    #     f.write(json.dumps(response, indent=4))
+    return json.loads(response['choices'][0]['message']['content'])
