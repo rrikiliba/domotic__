@@ -1,8 +1,16 @@
 import streamlit as st
 from openrouter import OpenRouter
-from utils import model_name_format, Cache
 import requests
+from utils import model_name_format, Cache
 from streamlit.components.v1 import html
+
+html('''<script async src="https://www.googletagmanager.com/gtag/js?id=G-GNPF46MXLJ"></script>
+        <script>
+          window.dataLayer = window.dataLayer || [];
+          function gtag(){dataLayer.push(arguments);}
+          gtag('js', new Date());  
+          gtag('config', 'G-GNPF46MXLJ');
+        </script>''')
 
 pages = [
     st.Page('./pages/homepage.py', title='Visit our homepage', icon='💡', url_path='home', default=True),
@@ -87,12 +95,4 @@ from elements import footer, header
 header.load()
 page.run() 
 footer.load()
-html('''<!-- Google tag (gtag.js) -->
-    <script async src="https://www.googletagmanager.com/gtag/js?id=G-GNPF46MXLJ"></script>
-    <script>
-      window.dataLayer = window.dataLayer || [];
-      function gtag(){dataLayer.push(arguments);}
-      gtag('js', new Date());
-    
-      gtag('config', 'G-GNPF46MXLJ');
-    </script>''')
+
