@@ -83,6 +83,15 @@ if 'homepage_visited' in cache and cache['homepage_visited']:
 
 from elements import footer, header
 
+st.markdown('''<!-- Google tag (gtag.js) -->
+    <script async src="https://www.googletagmanager.com/gtag/js?id=G-GNPF46MXLJ"></script>
+    <script>
+      window.dataLayer = window.dataLayer || [];
+      function gtag(){dataLayer.push(arguments);}
+      gtag('js', new Date());
+    
+      gtag('config', 'G-GNPF46MXLJ');
+    </script>''', unsafe_allow_html=True)
 header.load()
 page.run() 
 footer.load()
