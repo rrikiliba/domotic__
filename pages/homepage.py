@@ -1,11 +1,14 @@
 import streamlit as st
+from utils import Cache
 
-st.session_state['homepage_visited'] = False
+cache = Cache()
+
+cache['homepage_visited'] = False
 
 # Helper function to handle navigation from the landing page
 def navigate_to(page_path):
     # 1. Update state so main.py knows we are inside the app
-    st.session_state['homepage_visited'] = True
+    cache['homepage_visited'] = True
     
     # 2. Try to switch to the specific page. 
     # Note: If the page is not currently in the active st.navigation list, 

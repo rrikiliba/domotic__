@@ -3,7 +3,9 @@ import pandas as pd
 import json
 import datetime
 import numpy as np
-from utils import stream_generator
+from utils import stream_generator, Cache
+
+cache = Cache()
 
 def get_placeholder_json():
     """
@@ -40,9 +42,9 @@ def get_placeholder_json():
     }
     return json.dumps(data, indent=2)
 
-if 'energy_data' not in st.session_state:
-    st.session_state['energy_data'] = None
-    st.session_state['placeholder_data'] = get_placeholder_json()
+if 'energy_data' not in cache:
+    cache['energy_data'] = None
+    cache['placeholder_data'] = get_placeholder_json()
 
 with st.container(border=True):
     st.markdown("""
@@ -128,7 +130,7 @@ with st.container(border=True):
             
         with col2:
             with st.container(height=300, border=False):
-                st.json(st.session_state['placeholder_data'], expanded=3)
+                st.json(cache['placeholder_data'], expanded=3)
 
             btn_col1, btn_col2 = st.columns([1, 1], gap="small")
             
@@ -144,17 +146,17 @@ with st.container(border=True):
             with btn_col2:
                 if st.button("📊 Analyze", type="primary", use_container_width=True):
                     try:
-                        parsed_data = json.loads(st.session_state['placeholder_data'])
-                        st.session_state['energy_data'] = parsed_data
-                        st.session_state['energy_comment'] = None
+                        parsed_data = json.loads(cache['placeholder_data'])
+                        cache['energy_data'] = parsed_data
+                        cache['energy_comment'] = None
                         st.rerun()
                     except json.JSONDecodeError:
                         st.error("Invalid JSON format.")
 
-if st.session_state['energy_data']:
+if cache['energy_data']:
     st.divider()
     
-    data = st.session_state['energy_data']
+    data = cache['energy_data']
     devices = data.get("devices", [])
     
     total_consumption = 0
@@ -196,14 +198,14 @@ if st.session_state['energy_data']:
         )
 
     with energy_comment:
-        if 'energy_comment' not in st.session_state or st.session_state['energy_comment'] == None:
+        if 'energy_comment' not in cache or cache['energy_comment'] == None:
             try:
                 stream = st.session_state.client.chat.send(
-                    model=st.session_state['selected_model']['id'],
+                    model=cache['selected_model']['id'],
                     messages=[
                         {
                             "role": "system",
-                            "content": json.dumps(st.session_state['energy_data'])
+                            "content": json.dumps(cache['energy_data'])
                         },
                         {
                             "role": "user",
@@ -212,11 +214,11 @@ if st.session_state['energy_data']:
                     ],
                     stream=True,
                 )
-                st.session_state['energy_comment'] = st.write_stream(stream_generator(stream))
+                cache['energy_comment'] = st.write_stream(stream_generator(stream))
             except Exception as e:
                 st.error(e)
         else:
-            st.write(st.session_state['energy_comment'])
+            st.write(cache['energy_comment'])
 
 st.markdown("""
 <style>

@@ -1,8 +1,10 @@
 import streamlit as st
-from utils import model_name_format, stream_generator
+from utils import model_name_format, stream_generator, Cache
+
+cache = Cache()
 
 # Display the existing chat messages via `st.chat_message`.
-for message in st.session_state.messages:
+for message in cache['messages']:
     with st.chat_message(message["role"]):
         st.markdown(message["content"])
 
@@ -15,7 +17,7 @@ latest_message_assistant = st.empty()
 if prompt := st.chat_input('Ask your questions here:'):
 
     # Store and display the current prompt.
-    st.session_state.messages.append({"role": "user", "content": prompt})
+    cache['messages'].append({"role": "user", "content": prompt})
     with latest_message_user:
         with st.chat_message("user"):
             st.markdown(prompt)
@@ -24,9 +26,9 @@ if prompt := st.chat_input('Ask your questions here:'):
     messages = [{
                 "role": m["role"], 
                 "content": m["content"]
-            } for m in st.session_state.messages]
+            } for m in cache['messages']]
     
-    if st.session_state['csv_content'] is not None:
+    if cache['csv_content'] is not None:
         csv_messages = [
             {
                 'role': 'system',
@@ -34,12 +36,12 @@ if prompt := st.chat_input('Ask your questions here:'):
             },
             {
                 'role': 'system',
-                'content': st.session_state['csv_content']
+                'content': cache['csv_content']
             }
         ]
         messages = csv_messages + messages
 
-    if st.session_state['pdf_content'] is not None:
+    if cache['pdf_content'] is not None:
         pdf_messages = [
             {
                 'role': 'system',
@@ -47,7 +49,7 @@ if prompt := st.chat_input('Ask your questions here:'):
             },
             {
                 'role': 'user',
-                'content': st.session_state['pdf_content']
+                'content': cache['pdf_content']
             }
         ]
         messages = pdf_messages + messages
@@ -67,7 +69,7 @@ if prompt := st.chat_input('Ask your questions here:'):
     # Generate a response using the OpenRouter API.
     try:
         stream = st.session_state.client.chat.send(
-            model=st.session_state['selected_model']['id'],
+            model=cache['selected_model']['id'],
             messages=messages,
             stream=True,
         )
@@ -77,8 +79,8 @@ if prompt := st.chat_input('Ask your questions here:'):
             with st.chat_message("assistant"):
                 response = st.write_stream(stream_generator(stream))
         model_signature = f'''  
-    :gray[*answered by {model_name_format(st.session_state["selected_model"]).split(", from")[0]}*]'''
-        st.session_state.messages.append({"role": "assistant", "content": response + model_signature})
+    :gray[*answered by {model_name_format(cache["selected_model"]).split(", from")[0]}*]'''
+        cache['messages'].append({"role": "assistant", "content": response + model_signature})
     except Exception as e:
         with latest_message_assistant:
             st.error(e)
