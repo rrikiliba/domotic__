@@ -6,7 +6,7 @@ cache = Cache()
 
 def json_has_correct_field(json_bill:dict, fields_to_check: list[str]) -> bool:
     try:
-        return all([json_bill[field] for field in fields_to_check])
+        return all([json_bill.get(field, False) for field in fields_to_check])
     except:
         return False
 
@@ -16,16 +16,17 @@ def upload_bill():
         try:
             with st.spinner(text="Analyzing your bill. Please wait.", show_time=True):
                 while True:
-                    fields_to_extract = [
-                        "Tipologia di cliente",
-                        "Consumo annuo",
-                        "Comune di fornitura",
-                        "Prezzo bolletta",
-                        "Importo canone televisione per uso privato",
-                        "Potenza impegnata"
+                    fields_label_to_extract = [
+                        ("Tipologia di cliente", "client_type"),
+                        ("Consumo annuo", "annual_consume"),
+                        ("Comune di fornitura", "city"),
+                        ("Prezzo bolletta","monthly_bill_with_tv"),
+                        ("Importo canone televisione per uso privato","tv_price"),
+                        ("Potenza impegnata", "potenza_impegnata")
                     ]
-                    res = pdf_request(cache['pdf_model'], st.session_state['pdf_file'].getvalue(), fields_to_extract)
-                    if json_has_correct_field(res, fields_to_extract):
+                    (fields_to_extract, labels_to_save) = zip(*fields_label_to_extract)
+                    res = pdf_request(cache['pdf_model'], st.session_state['pdf_file'].getvalue(), list(fields_to_extract), list(labels_to_save))
+                    if json_has_correct_field(res, list(labels_to_save)):
                         cache['pdf_content'] = json.dumps(res)
                         break
 
@@ -40,11 +41,11 @@ def upload_bill():
 def show_info_about_bill():
     bill_json:dict = json.loads(cache['pdf_content'])
     my_bill_data:dict = {}
-    my_bill_data['customer_type'] = bill_json.get("Tipologia di cliente", "Unknown") 
-    my_bill_data['annual_consume'] = bill_json.get("Consumo annuo", 100000)
-    my_bill_data['city'] = str(bill_json.get("Comune di fornitura", "Unknown")).capitalize()
-    my_bill_data['price_no_tv'] = float(bill_json.get("Prezzo bolletta",100000))-float(bill_json.get("Importo canone televisione per uso privato",0))
-    my_bill_data['potenza_impegnata'] = bill_json.get("Potenza impegnata", 100000)
+    my_bill_data['customer_type'] = bill_json.get("client_type", "Unknown") 
+    my_bill_data['annual_consume'] = bill_json.get("annual_consume", 100000)
+    my_bill_data['city'] = str(bill_json.get("city", "Unknown")).capitalize()
+    my_bill_data['price_no_tv'] = float(bill_json.get("monthly_bill_with_tv",100000))-float(bill_json.get("tv_price",0))
+    my_bill_data['potenza_impegnata'] = bill_json.get("potenza_impegnata", 100000)
         
     other_bill_data = {}
     other_bill_data['avg_price'] = 100.0
@@ -53,7 +54,7 @@ def show_info_about_bill():
         col_h1, col_h2 = st.columns([2, 1])
         
         with col_h1:
-            st.markdown("Ecco i tuoi dati")
+            st.markdown("Ecco i tuoi dati, rispetto ad offerte presenti")
             st.markdown("<Dati da mostrare>")
 
 
@@ -64,7 +65,7 @@ def show_info_about_bill():
                 "Costo mensile",
                 f"€{my_bill_data['price_no_tv']:.2f}",
                 delta=delta_value,
-                delta_color="normal" if compared_to_avg_price > 0 else "inverse",
+                delta_color="inverse" if compared_to_avg_price < 0 else "normal",
                 help  = "Costo mensile senza includere TV"
             )
 

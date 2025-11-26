@@ -4,7 +4,7 @@ import base64
 import json
 
 
-def pdf_request(model, data, fields_to_extract:list[str], **kwargs) -> dict:
+def pdf_request(model, data, fields_to_extract:list[str], labels_to_save:list[str], **kwargs) -> dict:
     ''' Placeholder until the Python OpenRouter SDK implements the pdf reading functionality natively.'''
 
     response = requests.post(
@@ -25,7 +25,8 @@ def pdf_request(model, data, fields_to_extract:list[str], **kwargs) -> dict:
                             "You must include ONLY these fields: "+ ", ".join(fields_to_extract)+
                             "Do NOT include units. Name the fields EXACTLY as the request."+
                             "Numbers must be treated as number. If there is a decimal number, separate with a dot"+
-                            "The kind of client MUST be either 'Private' or 'Business'"
+                            "The kind of client MUST be either 'Private' or 'Business'"+
+                            "Save the fields with these labels: "+ ", ".join(labels_to_save)
                         },
                         {
                             "type": "file",
@@ -52,6 +53,6 @@ def pdf_request(model, data, fields_to_extract:list[str], **kwargs) -> dict:
             **kwargs
         }
     ).json()
-    # with open("./tmp.json", mode="a") as f:
-    #     f.write(json.dumps(response, indent=4))
+    with open("./tmp.json", mode="a") as f:
+        f.write(json.dumps(response, indent=4))
     return json.loads(response['choices'][0]['message']['content'])
