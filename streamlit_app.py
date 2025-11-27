@@ -2,15 +2,7 @@ import streamlit as st
 from openrouter import OpenRouter
 import requests
 from utils import model_name_format, Cache
-from streamlit.components.v1 import html
 
-html('''<script async src="https://www.googletagmanager.com/gtag/js?id=G-GNPF46MXLJ"></script>
-        <script>
-          window.dataLayer = window.dataLayer || [];
-          function gtag(){dataLayer.push(arguments);}
-          gtag('js', new Date());  
-          gtag('config', 'G-GNPF46MXLJ');
-        </script>''')
 
 pages = [
     st.Page('./pages/homepage.py', title='Visit our homepage', icon='💡', url_path='home', default=True),
