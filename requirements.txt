@@ -1,3 +1,4 @@
 streamlit
 st_theme
 openrouter
+streamlit-analytics

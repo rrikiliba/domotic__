@@ -41,3 +41,7 @@ borderColor = "#464B5C"        # Muted Blue-Grey
     textColor = "#D6EAF8"        # Pale blue text (Sci-fi terminal style)
     borderColor = "#5DADE2"      # Electric Blue borders
     primaryColor = "#F1C40F"     # 'High Voltage' Yellow highlights
+
+
+[client]
+    showErrorDetails = "none"

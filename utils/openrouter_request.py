@@ -7,14 +7,15 @@ import json
 def pdf_request(model, data, **kwargs) -> dict:
     ''' Placeholder until the Python OpenRouter SDK implements the pdf reading functionality natively.'''
 
-
     fields_to_extract = [
         "Tipologia di cliente",
         "Consumo annuo",
         "Comune di fornitura",
         "Prezzo bolletta totale",
         "Importo canone televisione per uso privato",
-        "Potenza impegnata"
+        "Potenza impegnata",
+        "quota fissa",
+        "nome offerta",
     ] #also change json_schema in reqeust
     
     response = requests.post(
@@ -51,7 +52,7 @@ def pdf_request(model, data, **kwargs) -> dict:
             'response_format': {
                 'type': 'json_schema',
                 "json_schema": {
-                    "name": "Bill analsys",
+                    "name": "Bill analysis",
                     "strict": True,
                     "schema": {
                         "type": "object",
@@ -79,6 +80,14 @@ def pdf_request(model, data, **kwargs) -> dict:
                             "potenza_impegnata": {
                                 "type": "number",
                                 "description": "Potenza impeganta"
+                            },
+                            "fixed_cost": {
+                                "type": "number",
+                                "description": "Costi fissa della bolletta"
+                            },
+                            "offer_code": {
+                                "type": "string",
+                                "description": "Codice offerta"
                             }
                         },
                         "required": ["client_type", "annual_consume", "city",
@@ -98,6 +107,6 @@ def pdf_request(model, data, **kwargs) -> dict:
             **kwargs
         }
     ).json()
-    with open("./tmp.json", mode="a") as f:
-        f.write(json.dumps(response, indent=4))
+    # with open("./tmp.json", mode="a") as f:
+        # f.write(json.dumps(response, indent=4))
     return json.loads(response['choices'][0]['message']['content'])
