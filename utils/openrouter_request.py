@@ -14,8 +14,9 @@ def pdf_request(model, data, **kwargs) -> dict:
         "Prezzo bolletta totale",
         "Importo canone televisione per uso privato",
         "Potenza impegnata",
-        "quota fissa",
-        "nome offerta",
+        "Accise e IVA",
+        "Quota per consumi",
+        "Codice offerta",
     ] #also change json_schema in reqeust
     
     response = requests.post(
@@ -81,9 +82,13 @@ def pdf_request(model, data, **kwargs) -> dict:
                                 "type": "number",
                                 "description": "Potenza impeganta"
                             },
-                            "fixed_cost": {
+                            "taxes": {
                                 "type": "number",
-                                "description": "Costi fissa della bolletta"
+                                "description": "Accise & IVA"
+                            },
+                            "variable_cost": {
+                                "type": "number",
+                                "description": "Quota per consumi della bolletta"
                             },
                             "offer_code": {
                                 "type": "string",
