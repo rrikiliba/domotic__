@@ -58,29 +58,23 @@ if 'homepage_visited' in cache and cache['homepage_visited']:
     with st.sidebar:
         # Display model switch
         with st.container(border=True):
-            cols = st.columns([0.8, 0.2], vertical_alignment='bottom')
-            with cols[0]:
-                if 'selected_model' not in cache:
-                    for model in cache['available_models']:
-                        if 'gpt-oss' in model['name']: 
-                            selected_model = model
-                            break
-                    else:
-                        selected_model = cache['available_models'][0]
+            if 'selected_model' not in cache:
+                for model in cache['available_models']:
+                    if 'gpt-oss' in model['name']: 
+                        selected_model = model
+                        break
                 else:
-                    selected_model = cache['selected_model']
-                index = cache['available_models'].index(selected_model)
-                cache['selected_model'] = st.selectbox('Which LLM should be used as base?', cache['available_models'], format_func=model_name_format, index=index)
-            with cols[1]:
-                with st.popover('?', type='tertiary', use_container_width=True, disabled='description' not in cache['selected_model'] or cache['selected_model']['description'] is None or len(cache['selected_model']['description']) == 0):
-                    if 'description' in cache['selected_model']:
-                        st.write(cache['selected_model']['description'])
+                    selected_model = cache['available_models'][0]
+            else:
+                selected_model = cache['selected_model']
+            index = cache['available_models'].index(selected_model)
+            cache['selected_model'] = st.selectbox('Which LLM should be used as base?', cache['available_models'], format_func=model_name_format, index=index, help=cache['selected_model']['description'] if 'description' in cache['selected_model'] else None)
+
 
         with st.container(border=True):
             st.write('Tell us how\'s your experience been:')
             rating = st.feedback('faces', width='stretch')
             
-        # not collected for now 
         if rating is not None:
             st.info('Thank you for your feedback, we really value your opinion.')
 

@@ -48,6 +48,7 @@ _orig_date_input = st.date_input
 _orig_time_input = st.time_input
 _orig_file_uploader = st.file_uploader
 _orig_color_picker = st.color_picker
+_orig_feedback = st.feedback
 
 _orig_sidebar_button = st.sidebar.button
 _orig_sidebar_checkbox = st.sidebar.checkbox
@@ -63,6 +64,7 @@ _orig_sidebar_date_input = st.sidebar.date_input
 _orig_sidebar_time_input = st.sidebar.time_input
 _orig_sidebar_file_uploader = st.sidebar.file_uploader
 _orig_sidebar_color_picker = st.sidebar.color_picker
+_orig_sidebar_feedback = st.sidebar.feedback
 
 
 def _track_user():
@@ -298,6 +300,7 @@ def start_tracking(
     st.time_input = _wrap_value(_orig_time_input)
     st.file_uploader = _wrap_file_uploader(_orig_file_uploader)
     st.color_picker = _wrap_value(_orig_color_picker)
+    st.feedback = _wrap_value(_orig_feedback)
 
     st.sidebar.button = _wrap_button(_orig_sidebar_button)
     st.sidebar.checkbox = _wrap_checkbox(_orig_sidebar_checkbox)
@@ -313,6 +316,7 @@ def start_tracking(
     st.sidebar.time_input = _wrap_value(_orig_sidebar_time_input)
     st.sidebar.file_uploader = _wrap_file_uploader(_orig_sidebar_file_uploader)
     st.sidebar.color_picker = _wrap_value(_orig_sidebar_color_picker)
+    st.sidebar.feedback = _wrap_value(_orig_sidebar_feedback)
 
     # replacements = {
     #     "button": _wrap_bool,
