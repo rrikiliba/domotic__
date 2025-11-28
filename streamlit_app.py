@@ -1,8 +1,10 @@
 import streamlit as st
+import streamlit_analytics as sta
 from openrouter import OpenRouter
 import requests
 from utils import model_name_format, Cache
 
+sta.start_tracking()
 
 pages = [
     st.Page('./pages/homepage.py', title='Visit our homepage', icon='💡', url_path='home', default=True),
@@ -10,6 +12,7 @@ pages = [
     st.Page('./pages/chat.py', title='Chat with Domitico', icon='💬', url_path='chat'),
     st.Page('./pages/overview.py', title='Offers overview', icon='📊', url_path='overview'),
     st.Page('./pages/smart_home.py', title='Your smart home data', icon='🏠', url_path='smart_home'),
+    st.Page('./pages/analytics.py', title='Check site data', icon='🔧', url_path='analytics')
 ]
 
 if 'OPENROUTER_API_KEY' not in st.secrets or st.secrets['OPENROUTER_API_KEY'] is None: 
@@ -85,5 +88,6 @@ from elements import footer, header
 
 header.load()
 page.run() 
+sta.stop_tracking(save_to_json='streamlit_analytics/data.json')
 footer.load()
 

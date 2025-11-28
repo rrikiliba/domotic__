@@ -1,5 +1,6 @@
 import streamlit as st
 from utils import Cache
+import streamlit_analytics as sta
 
 cache = Cache()
 
@@ -14,6 +15,7 @@ def navigate_to(page_path):
     # Note: If the page is not currently in the active st.navigation list, 
     # this might raise an error. In that case, we fallback to st.rerun() 
     # which will reload main.py and take the user to the default app page.
+    sta.stop_tracking(save_to_json='streamlit_analytics/data.json')
     try:
         st.switch_page(page_path)
     except Exception:

@@ -86,7 +86,7 @@ with st.container(border=True):
                 st.warning("Image not found: assets/images/HUB.png")
                 
             # Added button to product page (placeholder URL)
-            st.link_button("📦 Buy Domotic Hub", url="#", use_container_width=True, type="primary")
+            st.button("📦 Buy Domotic Hub", use_container_width=True, type="primary")
 
 
     with tab2:
@@ -112,7 +112,7 @@ with st.container(border=True):
             except:
                 st.warning("Image not found: assets/images/DIY.png")
 
-            st.link_button("📚 Read Setup Tutorial", url="#", use_container_width=True, type="primary")
+            st.button("📚 Read Setup Tutorial", use_container_width=True, type="primary")
 
 
     with tab3:
