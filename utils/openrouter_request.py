@@ -70,7 +70,7 @@ def pdf_request(model, data, **kwargs) -> dict:
                                 "type": "string",
                                 "description": "città di fornitura"
                             },
-                            "price_with_tv": {
+                            "total_price": {
                                 "type": "number",
                                 "description": "Raw price of the bill"
                             },
@@ -96,7 +96,8 @@ def pdf_request(model, data, **kwargs) -> dict:
                             }
                         },
                         "required": ["client_type", "annual_consume", "city",
-                                    "price_with_tv","tv_price", "potenza_impegnata"],
+                                    "total_price","tv_price", "potenza_impegnata",
+                                    "taxes","variable_cost","offer_code"],
                         "additionalProperties": False
                     }
                 }

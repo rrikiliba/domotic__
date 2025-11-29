@@ -93,11 +93,12 @@ def load_arera_offers():
         return None, f"Errore caricamento: {str(e)}"
 
 
-def find_best_offers(df:pd.DataFrame | None, my_bill_data, top_n=10):
+def find_best_offers(df:pd.DataFrame | None, my_bill_data, top_n=10) -> list:
     """
     Trova migliori offerte dal CSV ARERA
     Usa colonne reali: denominazione, nome_offerta, p_fix_*, p_vol_*
     """
+
     if df is None or df.empty:
         return []
     
@@ -111,11 +112,13 @@ def find_best_offers(df:pd.DataFrame | None, my_bill_data, top_n=10):
 #        spesa_attuale = my_bill_data.get('spesa_annua', 600)
 #    
     # Check se utente ha fasce orarie (per calcolo più preciso)
-    user_has_fasce = all([ #TODO
-        my_bill_data.get('consumo_f1'),
-        my_bill_data.get('consumo_f2'),
-        my_bill_data.get('consumo_f3')
-    ])
+#    user_has_fasce = all([ #TODO
+#        my_bill_data.get('consumo_f1'),
+#        my_bill_data.get('consumo_f2'),
+#        my_bill_data.get('consumo_f3')
+#    ])
+
+    user_has_fasce = False
     
     results = []
     
@@ -141,8 +144,8 @@ def find_best_offers(df:pd.DataFrame | None, my_bill_data, top_n=10):
             costo_totale_anno = costo_energia_anno + costo_fisso
             
             # Calcola risparmio
-            risparmio = my_bill_data['price'] - costo_totale_anno
-            risparmio_pct = (risparmio / my_bill_data['extimate_annual_cost'] * 100) if my_bill_data['extimate_annual_cost'] > 0 else 0
+            risparmio = my_bill_data['estimated_annual_cost'] - costo_totale_anno
+            risparmio_pct = (risparmio / my_bill_data['estimated_annual_cost'] * 100) if my_bill_data['estimated_annual_cost'] > 0 else 0
             
             # Score (0-100) basato su risparmio
             score = 50 + (risparmio / 10)
