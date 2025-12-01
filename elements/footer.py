@@ -1,8 +1,6 @@
 import streamlit as st
-from streamlit_theme import st_theme
 
 def load():
-    theme = st_theme()
     try:
         st.markdown(f"""<style>
 .footer a:link , a:visited{{
@@ -22,8 +20,8 @@ position: fixed;
 left: 0;
 bottom: 0;
 width: 100%;
-background-color: {theme['secondaryBackgroundColor']};
-color: {theme['textColor']};
+background-color: #D1F2EB;
+color: #145A32;
 text-align: center;
 padding-top: 25px;
 height: 5em;
