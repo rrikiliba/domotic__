@@ -138,11 +138,15 @@ with st.container(border=True):
             
             with btn_col1:
                 with st.popover("📝 Edit", use_container_width=True):
+                    def update_data():
+                        cache['placeholder_data'] = st.session_state['placeholder_data_textarea']
                     st.text_area(
-                        "Paste Energy Report (JSON)",
-                        key='placeholder_data',
+                        "json smart home data",
+                        value=cache['placeholder_data'],
+                        key='placeholder_data_textarea',
                         height=250,
-                        label_visibility="collapsed"
+                        label_visibility="collapsed",
+                        on_change=update_data
                     )
             
             with btn_col2:
