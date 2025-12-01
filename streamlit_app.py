@@ -68,7 +68,7 @@ if 'homepage_visited' in cache and cache['homepage_visited']:
             else:
                 selected_model = cache['selected_model']
             index = cache['available_models'].index(selected_model)
-            cache['selected_model'] = st.selectbox('Which LLM should be used as base?', cache['available_models'], format_func=model_name_format, index=index, help=cache['selected_model']['description'] if 'description' in cache['selected_model'] else None)
+            cache['selected_model'] = st.selectbox('Which LLM should be used as base?', cache['available_models'], format_func=model_name_format, index=index, help=selected_model['description'] if 'description' in selected_model else None)
 
 
         with st.container(border=True):
