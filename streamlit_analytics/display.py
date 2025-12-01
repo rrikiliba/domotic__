@@ -1,12 +1,8 @@
-"""
-Displays the analytics results within streamlit.
-"""
-
 import altair as alt
 import pandas as pd
 import streamlit as st
+import json
 from utils import Cache
-
 from . import utils
 
 cache = Cache()
@@ -16,7 +12,11 @@ def show_results(counts, reset_callback, unsafe_password=None):
 
     with st.container(border=True):
         # Show header.
-        st.title("Analytics Dashboard")
+        cols = st.columns([0.75, 0.25], vertical_alignment="bottom")
+        with cols[0]:
+            st.title("Analytics Dashboard", anchor=False)
+        with cols[1]:
+            st.download_button("💾 Download", data=json.dumps(counts, indent=4), on_click='ignore', width="stretch", type="primary", file_name="analytics.json")
         st.markdown(
             """
             This section shows a series of analytics about the site.  
