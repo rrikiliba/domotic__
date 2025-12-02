@@ -5,7 +5,7 @@ import requests
 from elements import footer, header
 from utils import model_name_format, Cache
 
-sta.start_tracking()
+sta.start_tracking(load_from_json='streamlit_analytics/data.json')
 
 pages = [
     st.Page('./pages/homepage.py', title='Visita la homepage', icon='💡', url_path='home', default=True),
