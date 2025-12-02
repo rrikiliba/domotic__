@@ -1,7 +1,3 @@
 streamlit
-openai
-pdfplumber
-plotly
+streamlit-analytics
 pandas
-python-dotenv
-plotly>=5.18.0
