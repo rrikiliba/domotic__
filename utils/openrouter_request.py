@@ -9,6 +9,7 @@ def pdf_request(model, data, **kwargs) -> dict:
 
     fields_to_extract = [
         "Tipologia di cliente",
+        "residente",
         "Consumo annuo",
         "Comune di fornitura",
         "Prezzo bolletta totale",
@@ -40,7 +41,8 @@ def pdf_request(model, data, **kwargs) -> dict:
                             "You must include ONLY these fields: "+ ", ".join(fields_to_extract)+
                             "Do NOT include units. Name the fields EXACTLY as the request."+
                             "Numbers must be treated as number. If there is a decimal number, separate with a dot"+
-                            "The kind of client MUST be either 'Domestico residente' or 'Domestico non residente' or 'Business'"
+                            "The kind of client MUST be either 'Domestico' or 'Business', and there must be a boolean value"+
+                            "that indicates if a client is 'residente' or not"
                         },
                         {
                             "type": "file",
@@ -64,6 +66,10 @@ def pdf_request(model, data, **kwargs) -> dict:
                             "client_type": {
                                 "type": "string",
                                 "description":  "Either 'Domestico residente' or 'Domestico non residente' or 'Business'"
+                            },
+                            "resident": {
+                                "type": "boolean",
+                                "description": "Client is resident in city of bill"
                             },
                             "annual_consume": {
                                 "type": "number",
@@ -110,7 +116,7 @@ def pdf_request(model, data, **kwargs) -> dict:
                                 "description": "Consumo annuo kWh nella fascia F3"
                             }
                         },
-                        "required": ["client_type", "annual_consume", "city",
+                        "required": ["client_type", "resident","annual_consume", "city",
                                     "total_price","tv_price", "potenza_impegnata",
                                     "taxes","variable_cost","offer_code",
                                     "f1_consume", "f2_consume", "f3_consume"

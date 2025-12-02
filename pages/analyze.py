@@ -137,18 +137,30 @@ def show_compared_to_other_bills() -> list:
 def change_value(key):
     cache['pdf_content'][key] = st.session_state[key]
 
+def change_client_type(options:list):
+    type = options.index(st.session_state["customer_type_box"])
+    if type == 0:
+        cache['pdf_content']['client_type'] = "domestico"
+        cache['pdf_content']['resident']  = True
+    elif type == 1:
+        cache['pdf_content']['client_type'] = "domestico"
+        cache['pdf_content']['resident']  = False
+    else:
+        cache['pdf_content']['client_type'] = "business"
+        cache['pdf_content']['resident']  = False
+
 def show_editable_info(): 
     col1, col2 = st.columns([1, 2])
 
     cache['pdf_content']['fixed_cost']=cache['pdf_content']['total_price']-cache['pdf_content']["taxes"]-cache['pdf_content']['variable_cost']
     options=['Domestico residente', 'Domestico non residente', 'Business']
+
     try:
         index = options.index(cache['pdf_content']['client_type']) 
     except:
         index = 0 
-    col1.selectbox("Tipo di customer",options, index, key="client_type", args=("client_type",), on_change=change_value)
+    col1.selectbox("Tipo di customer",options, index, key="customer_type_box",args=(options,),on_change=change_client_type)
     col1.text_input("Città", cache['pdf_content']['city'].capitalize(), max_chars=15, key='city', args=('city',), on_change=change_value)
-
 
     with col2:
         c1, c2, c3 = st.columns(3, vertical_alignment="bottom")
@@ -238,12 +250,12 @@ def confirm():
     cache['bill_info_confirmed'] = True 
 
 with st.container(border=True):
-    st.file_uploader('Upload your bill for more personalized results', accept_multiple_files=False, key='pdf_file', on_change=upload_bill, type='pdf')
+    st.file_uploader('Carica la tua bolletta elettrica per un confronto dell\'offerta', accept_multiple_files=False, key='pdf_file', on_change=upload_bill, type='pdf')
     model_signature = st.empty()
 
 
 if 'pdf_model' in cache and cache['pdf_model'] is not None and 'pdf_file' in st.session_state and st.session_state['pdf_file'] is not None:
-    model_signature.write(f':gray[*this file has been analyzed by {model_name_format(cache["selected_model"]).split(", from")[0]}*]')
+    model_signature.write(f':gray[*file analizzato da {model_name_format(cache["selected_model"]).split(", from")[0]}*]')
     with st.container(border=True):
         if 'bill_info_confirmed' in cache and cache['bill_info_confirmed'] == True:
             show_info_about_bill()
