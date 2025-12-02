@@ -1,7 +1,7 @@
 .streamlit/secrets.toml
 
-# Tmp file to see extracted bill information
-parsed_bill.json 
+# Tmp file to see extracted bill information and other json files
+*.json 
 
 # Byte-compiled / optimized / DLL files
 __pycache__/

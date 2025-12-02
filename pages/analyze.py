@@ -5,6 +5,8 @@ import json
 
 cache = Cache()
 
+
+cache['homepage_visited'] = True
 def upload_bill():
     cache['bill_info_confirmed'] = False
     if 'pdf_file' in st.session_state and st.session_state['pdf_file'] is not None:

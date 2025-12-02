@@ -7,6 +7,8 @@ from utils import stream_generator, Cache
 
 cache = Cache()
 
+cache['homepage_visited'] = True
+
 def get_placeholder_json():
     """
     Generates a JSON representing hourly energy consumption for 4 devices over the past 24 hours.
@@ -84,7 +86,7 @@ with st.container(border=True):
                 st.warning("Image not found: assets/images/HUB.png")
                 
             # Added button to product page (placeholder URL)
-            st.link_button("📦 Buy Domotic Hub", url="#", use_container_width=True, type="primary")
+            st.button("📦 Buy Domotic Hub", use_container_width=True, type="primary")
 
 
     with tab2:
@@ -110,7 +112,7 @@ with st.container(border=True):
             except:
                 st.warning("Image not found: assets/images/DIY.png")
 
-            st.link_button("📚 Read Setup Tutorial", url="#", use_container_width=True, type="primary")
+            st.button("📚 Read Setup Tutorial", use_container_width=True, type="primary")
 
 
     with tab3:
@@ -136,11 +138,15 @@ with st.container(border=True):
             
             with btn_col1:
                 with st.popover("📝 Edit", use_container_width=True):
+                    def update_data():
+                        cache['placeholder_data'] = st.session_state['placeholder_data_textarea']
                     st.text_area(
-                        "Paste Energy Report (JSON)",
-                        key='placeholder_data',
+                        "json smart home data",
+                        value=cache['placeholder_data'],
+                        key='placeholder_data_textarea',
                         height=250,
-                        label_visibility="collapsed"
+                        label_visibility="collapsed",
+                        on_change=update_data
                     )
             
             with btn_col2:

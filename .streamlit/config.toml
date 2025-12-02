@@ -1,47 +1,39 @@
 [theme]
-# ----------------------------------------------------------
-# GLOBAL SETTINGS
-# ----------------------------------------------------------
-# Default theme base
-base = "dark"
-
-# Global font family
+base = "light"
 font = "sans serif"
 
-# ----------------------------------------------------------
-# LIGHT THEME CONFIGURATION
-# ----------------------------------------------------------
 [theme.light]
-# Main Content Area (Clean & Professional for Bill Reading)
-primaryColor = "#2ECC71"       # Electric Emerald
-backgroundColor = "#FFFFFF"    # Pure White
-textColor = "#31333F"          # Standard Charcoal
-borderColor = "#E0E0E0"        # Light Grey
+primaryColor = "#1ABC9C"
+backgroundColor = "#E8F6F3"
+secondaryBackgroundColor = "#E1F8F4"
+textColor = "#145A32"
+greenColor = "#1ABC9C"
+greenBackgroundColor = "#E1F8F4"
+redColor = "#FF4B4B"
+redBackgroundColor = "#FFECEC"
+linkColor = "#1ABC9C"
 
-    # "FUNKY" LIGHT SIDEBAR (Mint & Eco)
     [theme.light.sidebar]
-    backgroundColor = "#E8F6F3"  # Very pale mint green
-    textColor = "#145A32"        # Dark Forest Green text
-    borderColor = "#A2D9CE"      # Distinct Teal border
-    primaryColor = "#1ABC9C"     # Turquoise highlights
+    backgroundColor = "#D1F2EB"
+    textColor = "#145A32"
+    borderColor = "#A2D9CE"
+    primaryColor = "#1ABC9C"
+    secondaryBackgroundColor = "#C1E6DF"
 
-# ----------------------------------------------------------
-# DARK THEME CONFIGURATION
-# ----------------------------------------------------------
 [theme.dark]
-# Main Content Area (High Contrast AI Dashboard)
-primaryColor = "#2ECC71"       # Electric Emerald
-backgroundColor = "#0E1117"    # Deep Dashboard Black
-textColor = "#FAFAFA"          # Off-white
-borderColor = "#464B5C"        # Muted Blue-Grey
+primaryColor = "#1ABC9C"
+backgroundColor = "#192323"
+secondaryBackgroundColor = "#1F2E2E"
+textColor = "#E8F6F3"
+greenColor = "#1ABC9C"
+greenBackgroundColor = "#145A32"
+redColor = "#FF4B4B"
+redBackgroundColor = "#4B1B1B"
+linkColor = "#1ABC9C"
 
-    # "FUNKY" DARK SIDEBAR (Cyber-Grid)
     [theme.dark.sidebar]
-    backgroundColor = "#15192B"  # A slightly purple-tinted midnight blue
-    textColor = "#D6EAF8"        # Pale blue text (Sci-fi terminal style)
-    borderColor = "#5DADE2"      # Electric Blue borders
-    primaryColor = "#F1C40F"     # 'High Voltage' Yellow highlights
-
-
-[client]
-    showErrorDetails = "none"
+    backgroundColor = "#D1F2EB"
+    textColor = "#145A32"
+    borderColor = "#A2D9CE"
+    primaryColor = "#1ABC9C"
+    secondaryBackgroundColor = "#C1E6DF"

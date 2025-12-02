@@ -1,8 +1,10 @@
 import streamlit as st
+import streamlit_analytics as sta
 from openrouter import OpenRouter
-from utils import model_name_format, Cache
 import requests
-from streamlit.components.v1 import html
+from utils import model_name_format, Cache
+
+sta.start_tracking()
 
 pages = [
     st.Page('./pages/homepage.py', title='Visit our homepage', icon='💡', url_path='home', default=True),
@@ -10,6 +12,7 @@ pages = [
     st.Page('./pages/chat.py', title='Chat with Domitico', icon='💬', url_path='chat'),
     st.Page('./pages/overview.py', title='Offers overview', icon='📊', url_path='overview'),
     st.Page('./pages/smart_home.py', title='Your smart home data', icon='🏠', url_path='smart_home'),
+    st.Page('./pages/analytics.py', title='Check site data', icon='🔧', url_path='analytics')
 ]
 
 if 'OPENROUTER_API_KEY' not in st.secrets or st.secrets['OPENROUTER_API_KEY'] is None: 
@@ -46,6 +49,11 @@ if 'messages' not in cache:
         }
     ]
 
+if 'available_models' not in cache:
+    models = requests.get('https://openrouter.ai/api/v1/models/user', headers={'Authorization': f'Bearer {st.secrets["OPENROUTER_API_KEY"]}'}).json()['data']
+    models = list(filter(lambda model:model['id'].endswith(':free'), models))
+    cache['available_models'] = models
+
 if 'homepage_visited' in cache and cache['homepage_visited']:
     with st.sidebar:
         # Display model switch
@@ -56,43 +64,30 @@ if 'homepage_visited' in cache and cache['homepage_visited']:
             cache['available_models'] = models
 
         with st.container(border=True):
-            cols = st.columns([0.8, 0.2], vertical_alignment='bottom')
-            with cols[0]:
-                if 'selected_model' not in cache:
-                    for model in cache['available_models']:
-                        if 'gpt-oss' in model['name']: 
-                            selected_model = model
-                            break
-                    else:
-                        selected_model = cache['available_models'][0]
+            if 'selected_model' not in cache:
+                for model in cache['available_models']:
+                    if 'gpt-oss' in model['name']: 
+                        selected_model = model
+                        break
                 else:
-                    selected_model = cache['selected_model']
-                index = cache['available_models'].index(selected_model)
-                cache['selected_model'] = st.selectbox('Which LLM should be used as base?', cache['available_models'], format_func=model_name_format, index=index)
-            with cols[1]:
-                with st.popover('?', type='tertiary', use_container_width=True, disabled='description' not in cache['selected_model'] or cache['selected_model']['description'] is None or len(cache['selected_model']['description']) == 0):
-                    if 'description' in cache['selected_model']:
-                        st.write(cache['selected_model']['description'])
+                    selected_model = cache['available_models'][0]
+            else:
+                selected_model = cache['selected_model']
+            index = cache['available_models'].index(selected_model)
+            cache['selected_model'] = st.selectbox('Which LLM should be used as base?', cache['available_models'], format_func=model_name_format, index=index, help=selected_model['description'] if 'description' in selected_model else None)
+
 
         with st.container(border=True):
             st.write('Tell us how\'s your experience been:')
             rating = st.feedback('faces', width='stretch')
             
-        # not collected for now 
         if rating is not None:
             st.info('Thank you for your feedback, we really value your opinion.')
 
 from elements import footer, header
 
-html('''<!-- Google tag (gtag.js) -->
-    <script async src="https://www.googletagmanager.com/gtag/js?id=G-GNPF46MXLJ"></script>
-    <script>
-      window.dataLayer = window.dataLayer || [];
-      function gtag(){dataLayer.push(arguments);}
-      gtag('js', new Date());
-    
-      gtag('config', 'G-GNPF46MXLJ');
-    </script>''')
 header.load()
 page.run() 
+sta.stop_tracking(save_to_json='streamlit_analytics/data.json')
 footer.load()
+

@@ -1,4 +1,3 @@
 streamlit
-st_theme
+streamlit_analytics
 openrouter
-pandas

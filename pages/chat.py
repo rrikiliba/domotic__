@@ -3,6 +3,8 @@ from utils import model_name_format, stream_generator, Cache
 
 cache = Cache()
 
+cache['homepage_visited'] = True
+
 # Display the existing chat messages via `st.chat_message`.
 for message in cache['messages']:
     with st.chat_message(message["role"]):
@@ -79,7 +81,7 @@ if prompt := st.chat_input('Ask your questions here:'):
             with st.chat_message("assistant"):
                 response = st.write_stream(stream_generator(stream))
         model_signature = f'''  
-    :gray[*answered by {model_name_format(cache["selected_model"]).split(", from")[0]}*]'''
+:gray[*answered by {model_name_format(cache["selected_model"]).split(", from")[0]}*]'''
         cache['messages'].append({"role": "assistant", "content": response + model_signature})
     except Exception as e:
         with latest_message_assistant:
