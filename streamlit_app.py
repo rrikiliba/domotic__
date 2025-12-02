@@ -52,12 +52,12 @@ if 'homepage_visited' in cache and cache['homepage_visited']:
             if 'selected_model' not in cache:
                 for model in cache['available_models']:
                     if 'gpt-oss' in model['name']: 
-                        selected_model = model
+                        cache['selected_model'] = model
                         break
                 else:
-                    selected_model = cache['available_models'][0]
-            else:
-                selected_model = cache['selected_model']
+                    cache['selected_model'] = cache['available_models'][0]
+
+            selected_model = cache['selected_model']
             index = cache['available_models'].index(selected_model)
             help = f"""La seguente descrizione viene fornita direttamente dai proprietari del modello selezionato:  
               
