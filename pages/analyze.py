@@ -1,6 +1,4 @@
-from typing import Any
 import streamlit as st
-import streamlit_analytics
 from utils import analysis_offerte as ao
 from utils import model_name_format, pdf_request, Cache 
 import json
@@ -8,33 +6,24 @@ import json
 cache = Cache()
 
 def upload_bill():
+    cache['bill_info_confirmed'] = False
     if 'pdf_file' in st.session_state and st.session_state['pdf_file'] is not None:
         cache['pdf_model'] = cache['selected_model']
         try:
             with st.spinner(text="Analyzing your bill. Please wait.", show_time=True):
                 res = pdf_request(cache['pdf_model'], st.session_state['pdf_file'].getvalue())
-                cache['pdf_content'] = json.dumps(res)
+                cache['pdf_content'] = res
         except KeyError:
             st.error('Our chatbot couldn\'t analyze your pdf.')
         except Exception as e:
             st.error(e)
         with open("./parsed_bill.json", "w+") as f:
-            f.write(json.dumps(json.loads(cache['pdf_content']), indent=4))
+            f.write(json.dumps(cache['pdf_content'], indent=4))
 
 def show_info_about_bill():
-    bill_json:dict = json.loads(cache['pdf_content'])
-    my_bill_data:dict = {}
-    my_bill_data['customer_type'] = bill_json.get("client_type", "Unknown")
-    my_bill_data['annual_consume'] = bill_json.get("annual_consume", 100000)
-    my_bill_data['city'] = str(bill_json.get("city", "Unknown")).capitalize()
-    my_bill_data['month_cost'] = float(bill_json.get("total_price",100000))
-    my_bill_data['estimated_annual_cost'] = my_bill_data['month_cost']*12
-    my_bill_data['price_no_tv'] = float(bill_json.get("total_price",100000))-float(bill_json.get("tv_price",0))
-    my_bill_data['potenza_impegnata'] = bill_json.get("potenza_impegnata", 100000)
-    my_bill_data['offer_code'] = bill_json.get("offer_code", "Unknown") 
-    my_bill_data['variable_cost']=bill_json.get('variable_cost', 10000)
-
-    my_bill_data['fixed_cost'] = my_bill_data['price_no_tv']-bill_json.get("taxes", 1000)-my_bill_data['variable_cost']
+    cache['pdf_content']['estimated_annual_cost'] = cache['pdf_content']['total_price']*12
+    cache['pdf_content']['price_no_tv'] = float(cache['pdf_content']["total_price"])-float(cache['pdf_content']["tv_price"])
+    cache['pdf_content']['fixed_cost'] = cache['pdf_content']['price_no_tv']-cache['pdf_content']["taxes"]-cache['pdf_content']['variable_cost']
     
 
     with st.container(border=True):
@@ -43,23 +32,22 @@ def show_info_about_bill():
         
         with col_h1:
             st.markdown("Ecco i tuoi dati")
-            st.markdown(f"Codice offerta: :gray[*{my_bill_data['offer_code']}*]")
+            st.markdown(f"Codice offerta: :gray[*{cache['pdf_content']['offer_code']}*]")
 
 
         with col_h2:
             st.metric(
                 "Costo mensile (no TV)",
-                f"€{my_bill_data['price_no_tv']:.2f}",
-                help  = f"Prezzo variabile(€{my_bill_data['variable_cost']:.2f}) + quota fissa (€{my_bill_data['fixed_cost']:.2f})"
+                f"€{cache['pdf_content']['price_no_tv']:.2f}",
+                help  = f"Prezzo variabile(€{cache['pdf_content']['variable_cost']:.2f}) + quota fissa (€{cache['pdf_content']['fixed_cost']:.2f})"
             )
 
             
         with col_h3:
             st.metric(
                 "Costo annuo (stima)",
-                "€{:.2f}".format(my_bill_data["estimated_annual_cost"])
+                "€{:.2f}".format(cache['pdf_content']["estimated_annual_cost"])
             )
-    return my_bill_data
 
 def show_offers(best_offers: list):
     st.markdown("### 📋 Dettaglio offerte")
@@ -116,9 +104,9 @@ def show_offers(best_offers: list):
 
 
 
-def show_compared_to_other_bills(my_bill_data: dict) -> list:
+def show_compared_to_other_bills() -> list:
     df_offerte, error = ao.load_arera_offers()
-    best_offers = ao.find_best_offers(df_offerte, my_bill_data, top_n=-1)
+    best_offers = ao.find_best_offers(df_offerte, cache['pdf_content'], top_n=-1)
     if len(best_offers) == 0:
         st.warning("Nessuna offerta migliore trovata nel database")
     else:
@@ -130,7 +118,7 @@ def show_compared_to_other_bills(my_bill_data: dict) -> list:
             st.metric(
                 "Risparmio Max",
                 f"€{max_saving:.2f}/anno",
-                delta=f"{max_saving/my_bill_data['estimated_annual_cost']*100:.0f}%" if my_bill_data['estimated_annual_cost'] > 0 else None
+                delta=f"{max_saving/cache['pdf_content']['estimated_annual_cost']*100:.0f}%" if cache['pdf_content']['estimated_annual_cost'] > 0 else None
             )
         
         with col_s2:
@@ -146,12 +134,122 @@ def show_compared_to_other_bills(my_bill_data: dict) -> list:
             st.metric("Prezzo Fisso", f"{n_fisso}/{len(best_offers)}")
     return best_offers
 
+def change_value(key):
+    cache['pdf_content'][key] = st.session_state[key]
+
+def show_editable_info(): 
+    col1, col2 = st.columns([1, 2])
+
+    cache['pdf_content']['fixed_cost']=cache['pdf_content']['total_price']-cache['pdf_content']["taxes"]-cache['pdf_content']['variable_cost']
+    options=['Domestico residente', 'Domestico non residente', 'Business']
+    try:
+        index = options.index(cache['pdf_content']['client_type']) 
+    except:
+        index = 0 
+    col1.selectbox("Tipo di customer",options, index, key="client_type", args=("client_type",), on_change=change_value)
+    col1.text_input("Città", cache['pdf_content']['city'].capitalize(), max_chars=15, key='city', args=('city',), on_change=change_value)
+
+
+    with col2:
+        c1, c2, c3 = st.columns(3, vertical_alignment="bottom")
+        c1.number_input(
+            "Costo Bolletta (€)", 
+            value=float(cache['pdf_content']['total_price']), 
+            step=1.0,
+            format="%.2f",
+            key="total_price",
+            args=("total_price",),
+            on_change=change_value
+        )
+        c2.number_input(
+            "Consumo annuo (kWh)", 
+            value=float(cache['pdf_content']['annual_consume']), 
+            step=10.0,
+            format="%.2f",
+            key="annual_consume",
+            args=("annual_consume",),
+            on_change=change_value
+        )
+        c3.number_input(
+            "Potenza Impegnata (kW)", 
+            value=float(cache['pdf_content']['potenza_impegnata']), 
+            step=0.5,
+            format="%.2f",
+            key="potenza_impegnata",
+            args=("potenza_impegnata",),
+            on_change=change_value
+        )
+
+        c4, c5,c6 = st.columns(3, vertical_alignment="bottom")
+        c4.number_input(
+            "Costo variabile (€)", 
+            value=float(cache['pdf_content']['variable_cost']), 
+            step=0.1,
+            format="%.2f",
+            key="variable_cost",
+            args=("variable_cost",),
+            on_change=change_value
+        )
+        c5.number_input(
+            "Costo IVA + Accise (€)", 
+            value=float(cache['pdf_content']['taxes']), 
+            step=0.1, 
+            format="%.2f",
+            key="taxes",
+            args=("taxes",),
+            on_change=change_value
+        )
+        
+        c7, c8, c9 = st.columns(3, vertical_alignment="bottom")
+        
+        c7.number_input(
+            "Consumi Fascia F1 (€)", 
+            value=float(cache['pdf_content']['f1_consume']), 
+            step=1.0, 
+            format="%.2f",
+            key="f1_consume",
+            args=("f1_consume",),
+            on_change=change_value
+        )
+        c8.number_input(
+            "Consumi Fascia F2 (€)", 
+            value=float(cache['pdf_content']['f2_consume']), 
+            step=1.0, 
+            format="%.2f",
+            key="f2_consume",
+            args=("f2_consume",),
+            on_change=change_value
+        )
+        c9.number_input(
+            "Consumi Fascia F3 (€)", 
+            value=float(cache['pdf_content']['f3_consume']), 
+            step=1.0, 
+            format="%.2f",
+            key="f3_consume",
+            args=("f3_consume",),
+            on_change=change_value
+        )
+            
+    st.space("small")
+    st.button(label="Confirm", on_click=confirm, type='primary', width="stretch")
+
+
+def confirm():
+    cache['bill_info_confirmed'] = True 
+
 with st.container(border=True):
-    with streamlit_analytics.track():
-        st.file_uploader('Upload your bill for more personalized results', accept_multiple_files=False, key='pdf_file', on_change=upload_bill, type='pdf')
-    if 'pdf_model' in cache and cache['pdf_model'] is not None and 'pdf_file' in st.session_state and st.session_state['pdf_file'] is not None:
-        st.write(f':gray[*this file has been analyzed by {model_name_format(cache["selected_model"]).split(", from")[0]}*]')
-        bill_data = show_info_about_bill()
-        best_offers = show_compared_to_other_bills(bill_data)
-        st.markdown("---")
-        show_offers(best_offers)
+    st.file_uploader('Upload your bill for more personalized results', accept_multiple_files=False, key='pdf_file', on_change=upload_bill, type='pdf')
+    model_signature = st.empty()
+
+
+if 'pdf_model' in cache and cache['pdf_model'] is not None and 'pdf_file' in st.session_state and st.session_state['pdf_file'] is not None:
+    model_signature.write(f':gray[*this file has been analyzed by {model_name_format(cache["selected_model"]).split(", from")[0]}*]')
+    with st.container(border=True):
+        if 'bill_info_confirmed' in cache and cache['bill_info_confirmed'] == True:
+            show_info_about_bill()
+            best_offers = show_compared_to_other_bills()
+            st.markdown("---")
+            show_offers(best_offers)
+        else:
+            show_editable_info()
+                

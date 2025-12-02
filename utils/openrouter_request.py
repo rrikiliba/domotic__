@@ -17,6 +17,9 @@ def pdf_request(model, data, **kwargs) -> dict:
         "Accise e IVA",
         "Quota per consumi",
         "Codice offerta",
+        "Consumo Annuo F1",
+        "Consumo Annuo F2",
+        "Consumo Annuo F3",
     ] #also change json_schema in reqeust
     
     response = requests.post(
@@ -37,7 +40,7 @@ def pdf_request(model, data, **kwargs) -> dict:
                             "You must include ONLY these fields: "+ ", ".join(fields_to_extract)+
                             "Do NOT include units. Name the fields EXACTLY as the request."+
                             "Numbers must be treated as number. If there is a decimal number, separate with a dot"+
-                            "The kind of client MUST be either 'Private' or 'Business'"
+                            "The kind of client MUST be either 'Domestico residente' or 'Domestico non residente' or 'Business'"
                         },
                         {
                             "type": "file",
@@ -60,7 +63,7 @@ def pdf_request(model, data, **kwargs) -> dict:
                         "properties": {
                             "client_type": {
                                 "type": "string",
-                                "description": "Either 'Private' or 'Business'"
+                                "description":  "Either 'Domestico residente' or 'Domestico non residente' or 'Business'"
                             },
                             "annual_consume": {
                                 "type": "number",
@@ -93,11 +96,25 @@ def pdf_request(model, data, **kwargs) -> dict:
                             "offer_code": {
                                 "type": "string",
                                 "description": "Codice offerta"
+                            },
+                            "f1_consume": {
+                                "type": "number",
+                                "description": "Consumo annuo kWh nella fascia F1"
+                            },
+                            "f2_consume": {
+                                "type": "number",
+                                "description": "Consumo annuo kWh nella fascia F2"
+                            },
+                            "f3_consume": {
+                                "type": "number",
+                                "description": "Consumo annuo kWh nella fascia F3"
                             }
                         },
                         "required": ["client_type", "annual_consume", "city",
                                     "total_price","tv_price", "potenza_impegnata",
-                                    "taxes","variable_cost","offer_code"],
+                                    "taxes","variable_cost","offer_code",
+                                    "f1_consume", "f2_consume", "f3_consume"
+                                    ],
                         "additionalProperties": False
                     }
                 }
