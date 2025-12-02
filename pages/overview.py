@@ -2,7 +2,7 @@ import streamlit as st
 import pandas as pd
 import xml.etree.ElementTree as ET
 import os
-from utigit add requirements.txtls import model_name_format, stream_generator, Cache
+from utils import model_name_format, stream_generator, Cache
 
 cache = Cache()
 
@@ -11,11 +11,12 @@ cache['homepage_visited'] = True
 # --- CONFIGURAZIONE PERCORSI ---
 # Nota: Usa percorsi relativi o assoluti in base a dove lanci il comando streamlit
 # Se questo file è in una sottocartella, potresti dover aggiustare i path
-BASE_DIR = os.path.dirname("../assets/offerts/")
+PROJECT_ROOT = os.path.dirname(os.path.dirname(os.path.abspath(__file__)))
+DATA_DIR = os.path.join(PROJECT_ROOT, "assets", "offers")
 # Se i file sono nella root del progetto, potresti dover usare '..' se questo script è in /pages
-PATH_XML = os.path.join(BASE_DIR, "PO_Offerte_E_MLIBERO_20251121.xml")
-PATH_CSV = os.path.join(BASE_DIR, "PO_Parametri_Mercato_Libero_E_20251121.csv")
-PATH_PUN = os.path.join(BASE_DIR, "pun.csv")
+PATH_XML = os.path.join(DATA_DIR, "PO_Offerte_E_MLIBERO_20251121.xml")
+PATH_CSV = os.path.join(DATA_DIR, "PO_Parametri_Mercato_Libero_E_20251121.csv")
+PATH_PUN = os.path.join(DATA_DIR, "pun.csv")
 
 # --- 1. FUNZIONI HELPER & PARSING (Invariate) ---
 
@@ -228,11 +229,6 @@ class CalcolatoreSpesa:
         }
 
 # --- 3. UI PAGE FUNCTION ---
-
-BASE_DIR = os.path.dirname(os.path.dirname(os.path.abspath(__file__))) 
-PATH_XML = os.path.join(BASE_DIR, "PO_Offerte_E_MLIBERO_20251121.xml")
-PATH_CSV = os.path.join(BASE_DIR, "PO_Parametri_Mercato_Libero_E_20251121.csv")
-PATH_PUN = os.path.join(BASE_DIR, "pun.csv")
 
 st.title("⚡️ Comparatore Luce")
 st.markdown("Analizza le offerte del mercato libero basate sul tuo profilo di consumo.")
