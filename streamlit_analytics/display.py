@@ -17,12 +17,8 @@ def show_results(counts, reset_callback, unsafe_password=None):
             st.title("Analytics Dashboard", anchor=False)
         with cols[1]:
             st.download_button("💾 Download", data=json.dumps(counts, indent=4), on_click='ignore', width="stretch", type="primary", file_name="analytics.json")
-        st.markdown(
-            """
-            This section shows a series of analytics about the site.  
-            It is meant for us developers, so you can go back to the other pages if you don't care about this.
-            """
-        )
+        st.markdown( """ Questa sezione mostra una serie di analisi sul sito.  
+        È pensata per noi sviluppatori, quindi puoi tornare alle altre pagine. """ )
 
     if 'password' not in cache:
         cache['password'] = False
@@ -30,11 +26,11 @@ def show_results(counts, reset_callback, unsafe_password=None):
     if unsafe_password is not None and not cache['password']:
         with st.container(border=True):
             password_input = st.text_input(
-                "Enter password to show results", type="password"
+                "Inserisci la password per mostrare i risultati", type="password"
             )
             if password_input != unsafe_password:
                 if len(password_input) > 0:
-                    st.write("Nope, that's not correct ☝️")
+                    st.write("Nope, non è corretta ☝️")
             else:
                 cache['password'] = True
                 st.rerun()
