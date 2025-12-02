@@ -20,16 +20,27 @@ st.markdown("""
     margin-top: 5em;
     bottom: 5em;
 }
-[class*="st-key-user"] {
-    border-radius: 1em;
-    background-color: #145A32;
-    color: #E8F6F3;
+
+@media (prefers-color-scheme: dark) {         
+    [class*="st-key-user"] {
+        border-radius: 1em;
+        background-color: #145A32;
+    }
+    [class*="st-key-assistant"] {
+        border-radius: 1em;
+        background-color: #1F2E2E;
+    }
 }
 
-[class*="st-key-assistant"] {
-    border-radius: 1em;
-    background-color: #1F2E2E;
-    color: #E8F6F3;
+@media (prefers-color-scheme: light) {
+    [class*="st-key-user"] {
+        border-radius: 1em;
+        background-color: #C1E6DF;
+    }
+    [class*="st-key-assistant"] {
+        border-radius: 1em;
+        background-color: #A2D9CE;
+    }
 }
 </style>
 """, unsafe_allow_html=True)
@@ -126,5 +137,5 @@ if prompt := st.chat_input('Fai le tue domande qui:'):
                 st.write(response + error)
     finally:
         model_signature = f'''  
-:gray[*answered by {model_name_format(cache["selected_model"]).split(", from")[0]}*]'''
+:gray[*risposta di {model_name_format(cache["selected_model"]).split(", from")[0]}*]'''
         cache['messages'].append({"role": "assistant", "content": response + model_signature})

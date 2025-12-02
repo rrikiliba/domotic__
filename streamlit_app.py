@@ -2,6 +2,7 @@ import streamlit as st
 import streamlit_analytics as sta
 from openrouter import OpenRouter
 import requests
+from elements import footer, header
 from utils import model_name_format, Cache
 
 sta.start_tracking()
@@ -48,12 +49,6 @@ if 'available_models' not in cache:
 if 'homepage_visited' in cache and cache['homepage_visited']:
     with st.sidebar:
         # Display model switch
-        if 'available_models' not in cache:
-            models = requests.get('https://openrouter.ai/api/v1/models/user', headers={'Authorization': f'Bearer {st.secrets["OPENROUTER_API_KEY"]}'}).json()['data']
-            models = list(filter(lambda model:model['id'].endswith(':free'), models))
-            models = list(filter(lambda model:"structured_outputs" in model['supported_parameters'], models))
-            cache['available_models'] = models
-
         with st.container(border=True):
             if 'selected_model' not in cache:
                 for model in cache['available_models']:
@@ -78,8 +73,6 @@ if 'homepage_visited' in cache and cache['homepage_visited']:
             
         if rating is not None:
             st.info('Grazie per il tuo feedback, apprezziamo molto la tua opinione.')
-
-from elements import footer, header
 
 header.load()
 page.run() 
