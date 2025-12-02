@@ -42,20 +42,15 @@ if 'messages' not in cache:
         }
     ]
 
-# Display the existing chat messages via `st.chat_message`.
 for message in cache['messages']:
     with chat_message(message["role"]):
         st.markdown(message["content"])
 
-# These are here for future proofing, in case we figure out how to put chat in a container
 latest_message_user = st.empty()
 latest_message_assistant = st.empty()
 
-# Create a chat input field to allow the user to enter a message. This will display
-# automatically at the bottom of the page.
 if prompt := st.chat_input('Fai le tue domande qui:'):
 
-    # Store and display the current prompt.
     cache['messages'].append({"role": "user", "content": prompt})
     with latest_message_user:
         with chat_message("user"):
@@ -113,15 +108,12 @@ if prompt := st.chat_input('Fai le tue domande qui:'):
         *messages
     ]
 
-    # Generate a response using the OpenRouter API.
     try:
         stream = st.session_state.client.chat.send(
             model=cache['selected_model']['id'],
             messages=messages,
             stream=True,
         )
-        # Stream the response to the chat using `st.write_stream`, then store it in 
-        # session state.
         with latest_message_assistant:
             with chat_message("assistant"):
                 response = st.write_stream(stream_generator(stream))
