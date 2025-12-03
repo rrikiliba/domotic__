@@ -12,7 +12,7 @@ def upload_bill():
     if 'pdf_file' in st.session_state and st.session_state['pdf_file'] is not None:
         cache['pdf_model'] = cache['selected_model']
         try:
-            with st.spinner(text="Analyzing your bill. Please wait.", show_time=True):
+            with st.spinner(text="Stiamo analizzando la tua bolletta, per favore attendi.", show_time=True):
                 res = pdf_request(cache['pdf_model'], st.session_state['pdf_file'].getvalue())
                 cache['pdf_content'] = res
         except KeyError:
@@ -52,8 +52,10 @@ def show_info_about_bill():
             )
 
 def show_offers(best_offers: list):
-    st.markdown("### 📋 Dettaglio offerte")
-    
+    with st.container(border=True):
+        st.markdown("### 📋 Dettaglio offerte")
+        st.write('Ecco una lista delle :green[offerte più vantaggiose] per te!')
+
     for i, offer in enumerate(best_offers[:10]):
         is_best = offer['consigliata']
         
@@ -64,7 +66,8 @@ def show_offers(best_offers: list):
             with col_h1:
                 if is_best and i < 3:
                     st.markdown("⭐ **CONSIGLIATA**")
-                st.markdown(f"### #{i+1} | {offer['fornitore']}")
+                    
+                st.markdown(f"### :green[{i+1} |] {offer['fornitore']}")
                 st.caption(offer['offerta'])
                 
                 # Badge tipo prezzo
@@ -112,28 +115,29 @@ def show_compared_to_other_bills() -> list:
     if len(best_offers) == 0:
         st.warning("Nessuna offerta migliore trovata nel database")
     else:
-        # Statistiche rapide
-        col_s1, col_s2, col_s3, col_s4 = st.columns(4)
-        
-        with col_s1:
-            max_saving = max([o['risparmio_euro'] for o in best_offers])
-            st.metric(
-                "Risparmio Max",
-                f"€{max_saving:.2f}/anno",
-                delta=f"{max_saving/cache['pdf_content']['estimated_annual_cost']*100:.0f}%" if cache['pdf_content']['estimated_annual_cost'] > 0 else None
-            )
-        
-        with col_s2:
-            avg_saving = sum([o['risparmio_euro'] for o in best_offers]) / len(best_offers)
-            st.metric("Risparmio Medio", f"€{avg_saving:.2f}/anno")
-        
-        with col_s3:
-            recommended = sum([1 for o in best_offers if o['consigliata']])
-            st.metric("Consigliate", recommended)
-        
-        with col_s4:
-            n_fisso = sum([1 for o in best_offers if o['tipo_prezzo'] == 'Fisso'])
-            st.metric("Prezzo Fisso", f"{n_fisso}/{len(best_offers)}")
+        with st.container(border=True):
+            # Statistiche rapide
+            col_s1, col_s2, col_s3, col_s4 = st.columns(4)
+            
+            with col_s1:
+                max_saving = max([o['risparmio_euro'] for o in best_offers])
+                st.metric(
+                    "Risparmio Max",
+                    f"€{max_saving:.2f}/anno",
+                    delta=f"{max_saving/cache['pdf_content']['estimated_annual_cost']*100:.0f}%" if cache['pdf_content']['estimated_annual_cost'] > 0 else None
+                )
+            
+            with col_s2:
+                avg_saving = sum([o['risparmio_euro'] for o in best_offers]) / len(best_offers)
+                st.metric("Risparmio Medio", f"€{avg_saving:.2f}/anno")
+            
+            with col_s3:
+                recommended = sum([1 for o in best_offers if o['consigliata']])
+                st.metric("Consigliate", recommended)
+            
+            with col_s4:
+                n_fisso = sum([1 for o in best_offers if o['tipo_prezzo'] == 'Fisso'])
+                st.metric("Prezzo Fisso", f"{n_fisso}/{len(best_offers)}")
     return best_offers
 
 def change_value(key):
@@ -258,12 +262,10 @@ with st.container(border=True):
 
 if 'pdf_model' in cache and cache['pdf_model'] is not None and 'pdf_file' in st.session_state and st.session_state['pdf_file'] is not None:
     model_signature.write(f':gray[*file analizzato da {model_name_format(cache["selected_model"]).split(", from")[0]}*]')
-    with st.container(border=True):
-        if 'bill_info_confirmed' in cache and cache['bill_info_confirmed'] == True:
-            show_info_about_bill()
-            best_offers = show_compared_to_other_bills()
-            st.markdown("---")
-            show_offers(best_offers)
-        else:
-            show_editable_info()
+    if 'bill_info_confirmed' in cache and cache['bill_info_confirmed'] == True:
+        show_info_about_bill()
+        best_offers = show_compared_to_other_bills()
+        show_offers(best_offers)
+    else:
+        show_editable_info()
                 

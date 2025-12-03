@@ -229,9 +229,9 @@ class CalcolatoreSpesa:
         }
 
 # --- 3. UI PAGE FUNCTION ---
-
-st.title("⚡️ Comparatore Luce")
-st.markdown("Analizza le offerte del mercato libero basate sul tuo profilo di consumo.")
+with st.container(border=True):
+    st.title("⚡️ Comparatore Luce", anchor=False)
+    st.markdown("Analizza le offerte del mercato libero basate sul tuo profilo di consumo.")
 
 # --- SEZIONE CONFIGURAZIONE (Espandibile al centro) ---
 with st.expander("⚙️ Configurazione Profilo", expanded=True):
@@ -314,25 +314,25 @@ else:
             if risultati:
                 df_res = pd.DataFrame(risultati).sort_values(by="Totale Annuo")
                 
-                st.divider()
-                st.subheader("🏆 Risultati")
-                
-                # Top KPI
-                best = df_res.iloc[0]
-                m1, m2, m3 = st.columns(3)
-                m1.metric("Migliore Offerta", best['Offerta'], best['Tipo'])
-                m2.metric("Spesa Stimata", f"{best['Totale Annuo']} €/anno", f"{best['Totale Mensile']} €/mese")
-                
-                if bolletta_attuale > 0:
-                    risp = best['Risparmio']
-                    m3.metric("Risparmio", f"{risp} €/mese", delta_color="normal" if risp > 0 else "inverse")
-                
-                # Tabella
-                st.dataframe(
-                    df_res.style.format({"Totale Annuo": "{:.2f}", "Totale Mensile": "{:.2f}", "Energia": "{:.2f}"}), 
-                    use_container_width=True, 
-                    hide_index=True
-                )
+                with st.container(border=True):
+                    st.subheader("🏆 Risultati")
+                    
+                    # Top KPI
+                    best = df_res.iloc[0]
+                    m1, m2, m3 = st.columns(3)
+                    m1.metric("Migliore Offerta", best['Offerta'], best['Tipo'])
+                    m2.metric("Spesa Stimata", f"{best['Totale Annuo']} €/anno", f"{best['Totale Mensile']} €/mese")
+                    
+                    if bolletta_attuale > 0:
+                        risp = best['Risparmio']
+                        m3.metric("Risparmio", f"{risp} €/mese", delta_color="normal" if risp > 0 else "inverse")
+                    
+                    # Tabella
+                    st.dataframe(
+                        df_res.style.format({"Totale Annuo": "{:.2f}", "Totale Mensile": "{:.2f}", "Energia": "{:.2f}"}), 
+                        use_container_width=True, 
+                        hide_index=True
+                    )
             else:
                 st.warning("Impossibile calcolare preventivi validi con i dati attuali.")
         else:
