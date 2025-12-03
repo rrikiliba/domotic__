@@ -7,6 +7,7 @@ cache = Cache()
 
 
 cache['homepage_visited'] = True
+
 def upload_bill():
     cache['bill_info_confirmed'] = False
     if 'pdf_file' in st.session_state and st.session_state['pdf_file'] is not None:
@@ -52,10 +53,6 @@ def show_info_about_bill():
             )
 
 def show_offers(best_offers: list):
-    with st.container(border=True):
-        st.markdown("### 📋 Dettaglio offerte")
-        st.write('Ecco una lista delle :green[offerte più vantaggiose] per te!')
-
     for i, offer in enumerate(best_offers[:10]):
         is_best = offer['consigliata']
         
@@ -65,9 +62,9 @@ def show_offers(best_offers: list):
             
             with col_h1:
                 if is_best and i < 3:
-                    st.markdown("⭐ **CONSIGLIATA**")
+                    st.markdown("⭐ **:orange[CONSIGLIATA]**")
                     
-                st.markdown(f"### :green[{i+1} |] {offer['fornitore']}")
+                st.subheader(f":green[{i+1} |] {offer['fornitore']}", anchor=False)
                 st.caption(offer['offerta'])
                 
                 # Badge tipo prezzo
@@ -249,16 +246,20 @@ def show_editable_info():
         )
             
     st.space("small")
-    st.button(label="Confirm", on_click=confirm, type='primary', width="stretch")
+    st.button(label="Conferma i dati", on_click=confirm, type='primary', width="stretch")
 
 
 def confirm():
     cache['bill_info_confirmed'] = True 
 
 with st.container(border=True):
+    st.subheader("📋 Analizza la tua bolletta", anchor=False)
+    st.write('''Carica qui sotto la tua bolletta in formato :green[pdf]: il nostro motore AI analizzerà i tuoi dati, e potrai parlarne direttamente con :blue[Domitico] 🧙‍♂️.  
+            Inoltre apparirà direttamente su questa pagina una lista delle :green[offerte più vantaggiose] per te!''')
+
+with st.container(border=True):
     st.file_uploader('Carica la tua bolletta elettrica per un confronto dell\'offerta', accept_multiple_files=False, key='pdf_file', on_change=upload_bill, type='pdf')
     model_signature = st.empty()
-
 
 if 'pdf_model' in cache and cache['pdf_model'] is not None and 'pdf_file' in st.session_state and st.session_state['pdf_file'] is not None:
     model_signature.write(f':gray[*file analizzato da {model_name_format(cache["selected_model"]).split(", from")[0]}*]')

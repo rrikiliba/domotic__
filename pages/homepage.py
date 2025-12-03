@@ -20,7 +20,7 @@ row2_col1, row2_col2 = st.columns(2, gap="medium")
 
 with row1_col1:
     with st.container(border=True):
-        st.subheader("📑 :green[Analizza la tua bolletta]", anchor=False)
+        st.subheader("📑 :green[La tua bolletta]", anchor=False)
         with st.container(border=False, height=120, vertical_alignment="center"):
             st.write("Carica la tua :green[bolletta elettrica] per estrarre i dati e ottenere un'analisi dettagliata dei :green[tuoi costi].")
         if st.button("Vai all'Analisi", type="primary", key="btn_analyze", width="stretch"):
@@ -30,7 +30,7 @@ with row1_col2:
     with st.container(border=True):
         st.subheader("💬 :green[Chatta con Domitico]", anchor=False)
         with st.container(border=False, height=120, vertical_alignment="center"):
-            st.write("Hai :green[domande] sulle tariffe energetiche o sui tuoi consumi? :green[Parla con il nostro assistente AI].")
+            st.write("Hai :green[domande] sulle tariffe energetiche o sui tuoi consumi? Parla con :blue[Domitico] 🧙‍♂️, il nostro assistente AI.")
         if st.button("Inizia una Chat", type="primary", key="btn_chat", width="stretch"):
             navigate_to("pages/chat.py")
 

@@ -14,11 +14,11 @@ def show_results(counts, reset_callback, unsafe_password=None):
         # Show header.
         cols = st.columns([0.75, 0.25], vertical_alignment="bottom")
         with cols[0]:
-            st.title("Analytics Dashboard", anchor=False)
+            st.subheader("Analytics Dashboard", anchor=False)
         with cols[1]:
             st.download_button("💾 Download", data=json.dumps(counts, indent=4), on_click='ignore', width="stretch", type="primary", file_name="analytics.json")
-        st.markdown( """ Questa sezione mostra una serie di analisi sul sito.  
-        È pensata per noi sviluppatori, quindi puoi tornare alle altre pagine. """ )
+        st.markdown( """ Questa sezione mostra una serie di analytics sull'utilizzo del sito da parte degli utenti.  
+        :red[È pensata per noi sviluppatori], quindi puoi tornare alle altre pagine. """ )
 
     if 'password' not in cache:
         cache['password'] = False

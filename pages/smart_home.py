@@ -49,7 +49,8 @@ if 'energy_data' not in cache:
     cache['placeholder_data'] = get_placeholder_json()
 
 with st.container(border=True):
-    st.markdown("Benvenuto nel tuo centro di comando energetico. Qui puoi ricevere una panoramica immediata e granulare dell'utilizzo di energia della tua casa. Analizza i tuoi schemi di consumo e poi chatta direttamente con Domitico, il tuo assistente energetico AI, per trovare modi intelligenti per risparmiare denaro e ottimizzare l'efficienza.")
+    st.subheader('🔌 Centro di comando energetico.', anchor=False)
+    st.markdown("Qui puoi ricevere una panoramica immediata e granulare dell':green[utilizzo di energia della tua casa]. Analizza i tuoi :green[schemi di consumo] e poi chatta direttamente con :blue[Domitico] 🧙‍♂️, il tuo assistente AI, per trovare :green[modi intelligenti per risparmiare] denaro :green[e ottimizzare] l'efficienza.")
 
 with st.container(border=True):
     tab1, tab2, tab3 = st.tabs(["🔌 Domotic Hub", "🛠️ Edizione DIY", "🧪 Prova il sistema"])
@@ -88,7 +89,7 @@ Una volta effettuato l'accesso, i tuoi dati in tempo reale appaiono :green[diret
             st.markdown("""
 :green[Per i creatori e gli smanettoni.]
 
-Hai già un server a casa? Puoi eseguire l'engine di Domitico completamente :green[gratuitamente].
+Hai già un server a casa? Puoi eseguire l'engine di Domotic completamente :green[gratuitamente].
 
 * **Installa:** su qualsiasi cosa possa girare Docker.
 * **Connettiti:** tramite MQTT o API REST.

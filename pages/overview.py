@@ -230,7 +230,7 @@ class CalcolatoreSpesa:
 
 # --- 3. UI PAGE FUNCTION ---
 with st.container(border=True):
-    st.title("⚡️ Comparatore Luce", anchor=False)
+    st.subheader("⚡️ Comparatore Offerte", anchor=False)
     st.markdown("Analizza le offerte del mercato libero basate sul tuo profilo di consumo.")
 
 # --- SEZIONE CONFIGURAZIONE (Espandibile al centro) ---

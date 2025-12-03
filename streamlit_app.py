@@ -24,10 +24,7 @@ elif 'openai_client' not in st.session_state:
 
 cache = Cache() 
 
-if 'homepage_visited' in cache and cache['homepage_visited']:
-    page = st.navigation(pages[1:])
-else:
-    page = st.navigation(pages, position='hidden')
+page = st.navigation(pages, position='sidebar' if 'homepage_visited' in cache and cache['homepage_visited'] else 'hidden')
     
 st.set_page_config(page_title="Domotic__", page_icon="", layout='centered' if page.url_path == 'chat' else 'wide')
 

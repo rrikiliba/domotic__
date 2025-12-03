@@ -49,7 +49,7 @@ if 'messages' not in cache:
     cache['messages'] = [
         {
             'role': 'assistant',
-            'content': 'Ciao! Il mio nome è Domitico e sono qui per aiutarti. Sentiti libero di chiedermi qualsiasi cosa riguardo alla tua bolletta elettrica :smile:'
+            'content': 'Ciao! Il mio nome è :blue[Domitico] e sono qui per aiutarti. Sentiti libero di chiedermi qualsiasi cosa riguardo alla tua bolletta elettrica :smile:'
         }
     ]
 
