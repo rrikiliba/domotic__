@@ -32,8 +32,6 @@ redBackgroundColor = "#4B1B1B"
 linkColor = "#1ABC9C"
 
     [theme.dark.sidebar]
-    backgroundColor = "#D1F2EB"
-    textColor = "#145A32"
-    borderColor = "#A2D9CE"
+    textColor = "#E8F6F3"
     primaryColor = "#1ABC9C"
-    secondaryBackgroundColor = "#C1E6DF"
+    backgroundColor = "#1F2E2E"

@@ -2,7 +2,7 @@ import streamlit as st
 
 def load():
     with st.container(border=True):
-        st.title("Welcome to Domotic__ 💡", anchor=None, help=None)
-        st.subheader("Your portal for energy monitoring and bill analysis.")
+        st.title("Benvenuto in :green[Domotic] 💡", anchor=None, help=None)
+        st.subheader("Il tuo portale per il :green[**monitoraggio energetico**], l'analisi delle :green[bollette] e molto altro!")
         st.space()
     st.markdown("---")

@@ -49,86 +49,76 @@ if 'energy_data' not in cache:
     cache['placeholder_data'] = get_placeholder_json()
 
 with st.container(border=True):
-    st.markdown("""
-**Welcome to your energy command center.** Here, you can receive an immediate, granular overview of your home's power usage. 
-Analyze your consumption patterns and then **chat directly with Domitico**, your AI energy assistant, 
-to find smart ways to save money and optimize efficiency.  
-                
-Here's how you can use this page:
-""")
+    st.markdown("Benvenuto nel tuo centro di comando energetico. Qui puoi ricevere una panoramica immediata e granulare dell'utilizzo di energia della tua casa. Analizza i tuoi schemi di consumo e poi chatta direttamente con Domitico, il tuo assistente energetico AI, per trovare modi intelligenti per risparmiare denaro e ottimizzare l'efficienza.")
 
 with st.container(border=True):
-    tab1, tab2, tab3 = st.tabs(["🔌 Domotic Hub", "🛠️ Do It Yourself", "🧪 Test the System"])
+    tab1, tab2, tab3 = st.tabs(["🔌 Domotic Hub", "🛠️ Edizione DIY", "🧪 Prova il sistema"])
 
     with tab1:
         col1, col2 = st.columns([1, 1], gap="large", vertical_alignment="top")
         
         with col1:
-            st.subheader("The Domotic Hub")
-            st.markdown("""
-            **:green[The premium, hassle-free solution.]**
-            
-            Our proprietary hub acts as the central brain of your smart home. 
-            It can replace your current bridge or attach seamlessly to your existing setup.
-            
-            * **One-time hardware purchase.**
-            * **Plug & Play:** :green[No coding] required.
-            * **Secure:** Local processing with cloud sync.
-            
-            Once logged in, your real-time data appears :green[directly on this dashboard].
+            st.subheader("Il Domotic Hub")
+            st.markdown(""":green[La soluzione premium e senza problemi.]  
+  
+Il nostro hub proprietario funge da cervello centrale della tua casa intelligente.  
+Può sostituire il tuo bridge attuale o collegarsi perfettamente alla tua configurazione esistente.  
+
+* :green[Acquisto hardware una tantum.]
+* **Plug & Play:** :green[Niente programmazione] richiesta.
+* **Sicuro:** Elaborazione locale con sincronizzazione cloud.
+
+Una volta effettuato l'accesso, i tuoi dati in tempo reale appaiono :green[direttamente su questa dashboard].
             """)
             
         with col2:
             try:
-                # Removed caption, changed width to use_container_width (modern syntax)
-                st.image("assets/images/HUB.png", use_container_width=True)
+                st.image("assets/images/HUB.png", width="stretch")
             except:
                 st.warning("Image not found: assets/images/HUB.png")
                 
-            # Added button to product page (placeholder URL)
-            st.button("📦 Buy Domotic Hub", use_container_width=True, type="primary")
+            st.button("📦 Acquista Domotic Hub", width="stretch", type="primary")
 
 
     with tab2:
         col1, col2 = st.columns([1, 1], gap="large", vertical_alignment="top")
         
         with col1:
-            st.subheader("The DIY Edition")
+            st.subheader("L'edizione DIY")
             st.markdown("""
-            **:green[For the makers and hackers.]**
-            
-            Already have a smart home server? You can run Domitico's engine completely :green[for free].
-            
-            * **Install:** on anything that can run Docker.
-            * **Connect:** via MQTT or REST API.
-            * **Pay:** :green[nothing]. You just bring your own hardware.
-            
-            Follow our documentation to spin up the container and start piping data immediately.
-            """)
+:green[Per i creatori e gli smanettoni.]
+
+Hai già un server a casa? Puoi eseguire l'engine di Domitico completamente :green[gratuitamente].
+
+* **Installa:** su qualsiasi cosa possa girare Docker.
+* **Connettiti:** tramite MQTT o API REST.
+* **Paga:** :green[nulla]. Devi solo portare il tuo hardware.
+
+Segui la nostra documentazione per avviare il container e iniziare subito a trasmettere i dati.
+""")
             
         with col2:
             try:
-                st.image("assets/images/DIY.png", use_container_width=True)
+                st.image("assets/images/DIY.png", width="stretch")
             except:
                 st.warning("Image not found: assets/images/DIY.png")
 
-            st.button("📚 Read Setup Tutorial", use_container_width=True, type="primary")
+            st.button("📚 Leggi la documentazione", width="stretch", type="primary")
 
 
     with tab3:
         col1, col2 = st.columns([1, 1], gap="large", vertical_alignment="top")
         
         with col1:
-            st.subheader("Simulate Your Data")
-            st.markdown("""
-            **:green[Don't have the hardware yet?]**
-            
-            You can :green[test the dashboard] visualization capabilities right now. 
-            Simply press :green[**Edit**] and mjodify or paste a JSON energy report in the text area. 
-            
-            We have pre-filled it with sample data for you to try immediately. 
-            Just click :green[**Analyze**] to see our report below.
-            """)
+            st.subheader("Simula i dati")
+            st.markdown(""":green[Non hai ancora l'hardware?]
+
+Puoi :green[testare subito le funzionalità] di visualizzazione della dashboard.
+Ti basta premere :green[**Modifica**] e modificare o incollare un report energetico in formato JSON nell'area di testo.
+
+Lo abbiamo pre-compilato con dati di esempio che puoi provare immediatamente.
+Basta cliccare :green[**Analizza**] per vedere il nostro report qui sotto.
+""")
             
         with col2:
             with st.container(height=300, border=False):
@@ -137,7 +127,7 @@ with st.container(border=True):
             btn_col1, btn_col2 = st.columns([1, 1], gap="small")
             
             with btn_col1:
-                with st.popover("📝 Edit", use_container_width=True):
+                with st.popover("📝 Edit", width="stretch"):
                     def update_data():
                         cache['placeholder_data'] = st.session_state['placeholder_data_textarea']
                     st.text_area(
@@ -150,7 +140,7 @@ with st.container(border=True):
                     )
             
             with btn_col2:
-                if st.button("📊 Analyze", type="primary", use_container_width=True):
+                if st.button("📊 Analyze", type="primary", width="stretch"):
                     try:
                         parsed_data = json.loads(cache['placeholder_data'])
                         cache['energy_data'] = parsed_data
