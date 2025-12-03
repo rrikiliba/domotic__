@@ -1,8 +1,8 @@
-# 💬 Chatbot template
+# ⚡️ Domotic - Smart Energy Assistant
 
-A simple Streamlit app that shows how to build a chatbot using OpenAI's GPT-3.5.
+An advanced Streamlit application that combines an **AI Chatbot** for energy advice with a powerful **Electricity Bill Comparator** for the Italian free market.
 
-[![Open in Streamlit](https://static.streamlit.io/badges/streamlit_badge_black_white.svg)](https://chatbot-template.streamlit.app/)
+[![Open in Streamlit](https://static.streamlit.io/badges/streamlit_badge_black_white.svg)](https://domotic.streamlit.app/)
 
 ### How to run it on your own machine
 
