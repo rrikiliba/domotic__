@@ -17,25 +17,25 @@ def get_placeholder_json():
         "report_date": str(datetime.date.today()),
         "devices": [
             {
-                "name": "Living Room AC",
+                "name": "Condizionatore",
                 "type": "hvac",
                 # AC running harder in the afternoon
                 "hourly_consumption_kwh": [round(np.random.uniform(0.5, 1.2), 2) if 12 <= i <= 20 else 0.1 for i in range(24)]
             },
             {
-                "name": "Kitchen Refrigerator",
+                "name": "Frigorifero",
                 "type": "appliance",
                 # Cycling compressor usage
                 "hourly_consumption_kwh": [round(np.random.uniform(0.1, 0.3), 2) for _ in range(24)]
             },
             {
-                "name": "Living Room Lamp",
+                "name": "Lampada Soggiorno",
                 "type": "lighting",
                 # 0 consumption during day, ~60W (0.06kWh) from 18:00 to 23:00
                 "hourly_consumption_kwh": [0.06 if 18 <= i <= 23 else 0.0 for i in range(24)]
             },
             {
-                "name": "Bedroom Air Purifier",
+                "name": "Purificatore Aria",
                 "type": "appliance",
                 # Constant low usage, slightly higher at night
                 "hourly_consumption_kwh": [0.05 if i > 20 or i < 8 else 0.02 for i in range(24)]
@@ -141,7 +141,7 @@ Basta cliccare :green[**Analizza**] per vedere il nostro report qui sotto.
                     )
             
             with btn_col2:
-                if st.button("📊 Analyze", type="primary", width="stretch"):
+                if st.button("📊 Analizza", type="primary", width="stretch"):
                     try:
                         parsed_data = json.loads(cache['placeholder_data'])
                         cache['energy_data'] = parsed_data
@@ -159,7 +159,7 @@ if cache['energy_data']:
     total_consumption = 0
     graph_data = []
     
-    for device in devices:
+    for i, device in enumerate(devices):
         name = device['name']
         consumptions = device['hourly_consumption_kwh']
         device_total = sum(consumptions)
@@ -167,29 +167,31 @@ if cache['energy_data']:
         
         for hour_idx, kwh in enumerate(consumptions):
             graph_data.append({
-                "Device": name,
-                "Hour": f"{hour_idx:02d}:00",
-                "Consumption (kWh)": kwh
+                "Dispositivo": name,
+                "Orario": f"{hour_idx:02d}:00",
+                "Consumo (kWh)": kwh
             })
+        cache['energy_data']['devices'][i]['device_total_consumption'] = device_total
+    cache['energy_data']['total_consumption'] = total_consumption
 
     df = pd.DataFrame(graph_data)
 
     with st.container(border=True):
         col_sum1, col_sum2 = st.columns([3, 1], vertical_alignment="center")
         with col_sum1:
-            st.subheader("📝 Energy Report Summary")
+            st.subheader("📝 Riassunto dei tuoi consumi", anchor=False)
         with col_sum2:
-            st.metric(label="Total 24h Load", value=f"{total_consumption:.2f} kWh")
+            st.metric(label="Totale su 24h", value=f"{total_consumption:.2f} kWh")
         energy_comment = st.empty()
 
 
     with st.container(border=True):
-        st.subheader("Hourly Consumption per Device")
+        st.subheader("Consumo orario per dispositivo", anchor=False)
         st.bar_chart(
             data=df,
-            x="Hour",
-            y="Consumption (kWh)",
-            color="Device",
+            x="Orario",
+            y="Consumo (kWh)",
+            color="Dispositivo",
             stack=True,
             height=400
         )
@@ -202,11 +204,15 @@ if cache['energy_data']:
                     messages=[
                         {
                             "role": "system",
-                            "content": json.dumps(cache['energy_data'])
+                            "content": "rispondi in formato markdown valido, inoltre se vuoi enfatizzare una o piu` parole, utilizza :green[] per racchiuderle."
                         },
                         {
                             "role": "user",
-                            "content": "Very briefly comment on the energy consumption of my smart home devices based on the json data you have."
+                            "content": json.dumps(cache['energy_data'])
+                        },
+                        {
+                            "role": "system",
+                            "content": "Commenta brevemente il consumo dei miei dispositivi smart home, basandoti sui dati json che hai al riguardo. Non c'e` bisogno che parli del consumo totale perche` viene gia` mostrato all'utente in un'altra sezione."
                         }
                     ],
                     stream=True,
