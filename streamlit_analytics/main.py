@@ -343,6 +343,7 @@ def start_tracking(
 def stop_tracking(
     unsafe_password: str = None,
     save_to_json: Union[str, Path] = None,
+    json_location: Union[str, Path] = None,
     firestore_key_file: str = None,
     firestore_collection_name: str = "counts",
     verbose: bool = False,
@@ -415,7 +416,7 @@ def stop_tracking(
     # Show analytics results in the streamlit app if `?analytics=on` is set in the URL.
     if show or ("analytics" in st.query_params and "on" in st.query_params["analytics"]):
         # st.write("---")
-        display.show_results(counts, reset_counts, unsafe_password)
+        display.show_results(counts, reset_counts, unsafe_password, json_location)
 
 
 @contextmanager
