@@ -102,11 +102,7 @@ if prompt := st.chat_input('Fai le tue domande qui:'):
     messages = [
         {
             "role": "system",
-            "content": "Sei un assistente utile. Sei esperto in bollette elettriche, consumo energetico, ecc. L'utente potrebbe farti domande relative a quest'area."
-        },
-        {
-            "role": "system",
-            "content": "Devi respingere le domande non correlate a bollette elettriche, piani tariffari, elettrodomestici e consumo generale di elettricità domestica."
+            "content": "Sei un assistente utile. Sei esperto in bollette elettriche, consumo energetico, ecc. L'utente potrebbe farti domande relative a quest'area. Devi respingere le domande non correlate a bollette elettriche, piani tariffari, elettrodomestici e consumo generale di elettricità domestica."
         },
         {
             "role": "system",
@@ -114,7 +110,7 @@ if prompt := st.chat_input('Fai le tue domande qui:'):
         },
         {
             "role": "system",
-            "content": "Rispondi pure in formato markdown, e se vuoi enfatizzare una determinata parola o frase mettila all'interno delle parentesi quadre con la keyword :green davanti, in questo modo: :green[la_tua_parola_o_frase_da_enfatizzare]"
+            "content": "rispondi in formato markdown valido, inoltre se vuoi enfatizzare una o piu` parole, utilizza :green[] per racchiuderle."
         },
         *messages
     ]

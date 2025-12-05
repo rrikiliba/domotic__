@@ -59,7 +59,7 @@ with st.container(border=True):
         col1, col2 = st.columns([1, 1], gap="large", vertical_alignment="top")
         
         with col1:
-            st.subheader("Il Domotic Hub")
+            st.subheader("Il Domotic Hub", anchor=False)
             st.markdown(""":green[La soluzione premium e senza problemi.]  
   
 Il nostro hub proprietario funge da cervello centrale della tua casa intelligente.  
@@ -85,7 +85,7 @@ Una volta effettuato l'accesso, i tuoi dati in tempo reale appaiono :green[diret
         col1, col2 = st.columns([1, 1], gap="large", vertical_alignment="top")
         
         with col1:
-            st.subheader("L'edizione DIY")
+            st.subheader("L'edizione DIY", anchor=False)
             st.markdown("""
 :green[Per i creatori e gli smanettoni.]
 
@@ -111,7 +111,7 @@ Segui la nostra documentazione per avviare il container e iniziare subito a tras
         col1, col2 = st.columns([1, 1], gap="large", vertical_alignment="top")
         
         with col1:
-            st.subheader("Simula i dati")
+            st.subheader("Simula i dati", anchor=False)
             st.markdown(""":green[Non hai ancora l'hardware?]
 
 Puoi :green[testare subito le funzionalità] di visualizzazione della dashboard.
@@ -211,7 +211,7 @@ if cache['energy_data']:
                             "content": json.dumps(cache['energy_data'])
                         },
                         {
-                            "role": "system",
+                            "role": "user",
                             "content": "Commenta brevemente il consumo dei miei dispositivi smart home, basandoti sui dati json che hai al riguardo. Non c'e` bisogno che parli del consumo totale perche` viene gia` mostrato all'utente in un'altra sezione."
                         }
                     ],
