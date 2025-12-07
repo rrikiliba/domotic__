@@ -1,10 +1,9 @@
 import streamlit as st
 from utils import analysis_offerte as ao
-from utils import model_name_format, pdf_request, Cache 
+from utils import model_name_format, pdf_request, get_user_cache 
 import json
 
-cache = Cache()
-
+cache = get_user_cache()
 
 cache['homepage_visited'] = True
 

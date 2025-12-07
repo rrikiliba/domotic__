@@ -1,8 +1,8 @@
 import streamlit as st
-from utils import model_name_format, stream_generator, Cache
+from utils import model_name_format, stream_generator, get_user_cache
 import uuid
 
-cache = Cache()
+cache = get_user_cache()
 
 cache['homepage_visited'] = True
 
@@ -73,18 +73,18 @@ if prompt := st.chat_input('Fai le tue domande qui:'):
                 "content": m["content"]
             } for m in cache['messages']]
     
-    if cache['csv_content'] is not None:
-        csv_messages = [
-            {
-                'role': 'system',
-                'content': 'Utilizza i dati CSV sulle offerte disponibili dal seguente file CSV per supportare le tue risposte.'
-            },
-            {
-                'role': 'system',
-                'content': cache['csv_content']
-            }
-        ]
-        messages = csv_messages + messages
+    # if cache['csv_content'] is not None:
+    #     csv_messages = [
+    #         {
+    #             'role': 'system',
+    #             'content': 'Utilizza i dati CSV sulle offerte disponibili dal seguente file CSV per supportare le tue risposte.'
+    #         },
+    #         {
+    #             'role': 'system',
+    #             'content': cache['csv_content']
+    #         }
+    #     ]
+    #     messages = csv_messages + messages
 
     if cache['pdf_content'] is not None:
         pdf_messages = [
@@ -119,7 +119,7 @@ if prompt := st.chat_input('Fai le tue domande qui:'):
         stream = st.session_state.client.chat.send(
             model=cache['selected_model']['id'],
             messages=messages,
-            stream=True,
+            stream=True
         )
         with latest_message_assistant:
             with chat_message("assistant"):
@@ -129,7 +129,8 @@ if prompt := st.chat_input('Fai le tue domande qui:'):
             with chat_message("assistant"):
                 response = "Mi dispiace ma non ho saputo rispondere al tuo messaggio."
                 error = f'''  
-:gray[*messaggio di errore: {e} ({type(e).__name__})*]'''
+:gray[*tipo di errore: ({type(e).__name__.lstrip('(').rstrip(')')})*]'''
+                print(e)
                 st.write(response + error)
     finally:
         model_signature = f'''  

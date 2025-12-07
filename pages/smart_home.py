@@ -3,9 +3,9 @@ import pandas as pd
 import json
 import datetime
 import numpy as np
-from utils import stream_generator, Cache
+from utils import stream_generator, get_user_cache
 
-cache = Cache()
+cache = get_user_cache()
 
 cache['homepage_visited'] = True
 

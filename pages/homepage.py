@@ -1,10 +1,11 @@
 import streamlit as st
-from utils import Cache
+from utils import get_user_cache
 import streamlit_analytics as sta
 
-cache = Cache()
+cache = get_user_cache()
 
-cache['homepage_visited'] = False
+if 'homepage_visited' not in cache:
+    cache['homepage_visited'] = False
 
 def navigate_to(page_path):
     cache['homepage_visited'] = True

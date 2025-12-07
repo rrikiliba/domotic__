@@ -1,4 +1,5 @@
 streamlit
 streamlit-analytics
+streamlit_cookies_controller
 openrouter
 pandas

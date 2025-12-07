@@ -2,12 +2,14 @@ import altair as alt
 import pandas as pd
 import streamlit as st
 import json
-from utils import Cache
+from utils import get_user_cache
 from pathlib import Path
 from . import utils
 import fcntl
 
-cache = Cache()
+cache = get_user_cache()
+
+cache['homepage_visited'] = True
 
 def show_results(counts, reset_callback, unsafe_password=None, json_location=None):
     """Show analytics results in streamlit, asking for password if given."""
