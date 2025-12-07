@@ -94,7 +94,7 @@ if prompt := st.chat_input('Fai le tue domande qui:'):
             },
             {
                 'role': 'user',
-                'content': cache['pdf_content']
+                'content': str(cache['pdf_content'])
             }
         ]
         messages = pdf_messages + messages
