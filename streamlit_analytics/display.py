@@ -2,21 +2,21 @@ import altair as alt
 import pandas as pd
 import streamlit as st
 import json
-from utils import Cache
+from utils import get_user_cache
+from pathlib import Path
 from . import utils
+import fcntl
 
-cache = Cache()
+cache = get_user_cache()
 
-def show_results(counts, reset_callback, unsafe_password=None):
+cache['homepage_visited'] = True
+
+def show_results(counts, reset_callback, unsafe_password=None, json_location=None):
     """Show analytics results in streamlit, asking for password if given."""
 
     with st.container(border=True):
         # Show header.
-        cols = st.columns([0.75, 0.25], vertical_alignment="bottom")
-        with cols[0]:
-            st.subheader("Analytics Dashboard", anchor=False)
-        with cols[1]:
-            st.download_button("💾 Download", data=json.dumps(counts, indent=4), on_click='ignore', width="stretch", type="primary", file_name="analytics.json")
+        st.subheader("Analytics Dashboard", anchor=False)
         st.markdown( """ Questa sezione mostra una serie di analytics sull'utilizzo del sito da parte degli utenti.  
         :red[È pensata per noi sviluppatori], quindi puoi tornare alle altre pagine. """ )
 
@@ -35,9 +35,26 @@ def show_results(counts, reset_callback, unsafe_password=None):
                 cache['password'] = True
                 st.rerun()
     else:
+        with st.expander('Manage data'):
+            cols = st.columns(2, vertical_alignment="top")
+            with cols[0]:
+                def upload_analytics():
+                    new_json = st.session_state['analytics_upload']
+                    if new_json is not None:
+                        with Path(json_location).open("wb") as f:
+                            fcntl.flock(f.fileno(), fcntl.LOCK_EX)
+                            f.write(new_json.read())
+                st.file_uploader('Upload', type='json', accept_multiple_files=False, label_visibility="hidden", key='analytics_upload', on_change=upload_analytics)
+            with cols[1]:
+                st.space()
+                with st.container(border=True):
+                    st.write('Get the current site analytics')
+                    st.space("stretch")
+                    st.download_button("Download", data=json.dumps(counts, indent=4), on_click='ignore', type="secondary", file_name="analytics.json")
+        
         with st.container(border=True):
             # Show traffic.
-            st.header("Traffic")
+            st.header("Traffic", anchor=False)
             st.write(f"since {counts['start_time']}")
             col1, col2, col3 = st.columns(3)
             col1.metric(
@@ -101,7 +118,7 @@ def show_results(counts, reset_callback, unsafe_password=None):
 
         with st.container(border=True):
             # Show widget interactions.
-            st.header("Widget interactions")
+            st.header("Widget interactions", anchor=False)
             st.markdown(
                 """
                 Find out how users interacted with your app!

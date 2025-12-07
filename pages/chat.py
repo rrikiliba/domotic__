@@ -1,8 +1,8 @@
 import streamlit as st
-from utils import model_name_format, stream_generator, Cache
+from utils import model_name_format, stream_generator, get_user_cache
 import uuid
 
-cache = Cache()
+cache = get_user_cache()
 
 cache['homepage_visited'] = True
 
@@ -56,6 +56,8 @@ if 'messages' not in cache:
 for message in cache['messages']:
     with chat_message(message["role"]):
         st.markdown(message["content"])
+        if 'signature' in message:
+            st.markdown(message['signature'])
 
 latest_message_user = st.empty()
 latest_message_assistant = st.empty()
@@ -73,18 +75,18 @@ if prompt := st.chat_input('Fai le tue domande qui:'):
                 "content": m["content"]
             } for m in cache['messages']]
     
-    if cache['csv_content'] is not None:
-        csv_messages = [
-            {
-                'role': 'system',
-                'content': 'Utilizza i dati CSV sulle offerte disponibili dal seguente file CSV per supportare le tue risposte.'
-            },
-            {
-                'role': 'system',
-                'content': cache['csv_content']
-            }
-        ]
-        messages = csv_messages + messages
+    # if cache['csv_content'] is not None:
+    #     csv_messages = [
+    #         {
+    #             'role': 'system',
+    #             'content': 'Utilizza i dati CSV sulle offerte disponibili dal seguente file CSV per supportare le tue risposte.'
+    #         },
+    #         {
+    #             'role': 'system',
+    #             'content': cache['csv_content']
+    #         }
+    #     ]
+    #     messages = csv_messages + messages
 
     if cache['pdf_content'] is not None:
         pdf_messages = [
@@ -94,7 +96,7 @@ if prompt := st.chat_input('Fai le tue domande qui:'):
             },
             {
                 'role': 'user',
-                'content': cache['pdf_content']
+                'content': str(cache['pdf_content'])
             }
         ]
         messages = pdf_messages + messages
@@ -102,11 +104,7 @@ if prompt := st.chat_input('Fai le tue domande qui:'):
     messages = [
         {
             "role": "system",
-            "content": "Sei un assistente utile. Sei esperto in bollette elettriche, consumo energetico, ecc. L'utente potrebbe farti domande relative a quest'area."
-        },
-        {
-            "role": "system",
-            "content": "Devi respingere le domande non correlate a bollette elettriche, piani tariffari, elettrodomestici e consumo generale di elettricità domestica."
+            "content": "Sei un assistente utile. Sei esperto in bollette elettriche, consumo energetico, ecc. L'utente potrebbe farti domande relative a quest'area. Devi respingere le domande non correlate a bollette elettriche, piani tariffari, elettrodomestici e consumo generale di elettricità domestica."
         },
         {
             "role": "system",
@@ -114,7 +112,7 @@ if prompt := st.chat_input('Fai le tue domande qui:'):
         },
         {
             "role": "system",
-            "content": "Rispondi pure in formato markdown, e se vuoi enfatizzare una determinata parola o frase mettila all'interno delle parentesi quadre con la keyword :green davanti, in questo modo: :green[la_tua_parola_o_frase_da_enfatizzare]"
+            "content": "rispondi in formato markdown valido, inoltre se vuoi enfatizzare una o piu` parole, utilizza :green[] per racchiuderle."
         },
         *messages
     ]
@@ -123,7 +121,7 @@ if prompt := st.chat_input('Fai le tue domande qui:'):
         stream = st.session_state.client.chat.send(
             model=cache['selected_model']['id'],
             messages=messages,
-            stream=True,
+            stream=True
         )
         with latest_message_assistant:
             with chat_message("assistant"):
@@ -133,9 +131,9 @@ if prompt := st.chat_input('Fai le tue domande qui:'):
             with chat_message("assistant"):
                 response = "Mi dispiace ma non ho saputo rispondere al tuo messaggio."
                 error = f'''  
-:gray[*messaggio di errore: {e} ({type(e).__name__})*]'''
+:gray[*tipo di errore: ({type(e).__name__.lstrip('(').rstrip(')')})*]'''
+                print(e)
                 st.write(response + error)
     finally:
-        model_signature = f'''  
-:gray[*risposta di {model_name_format(cache["selected_model"]).split(", from")[0]}*]'''
-        cache['messages'].append({"role": "assistant", "content": response + model_signature})
+        model_signature = f':gray[*risposta di {model_name_format(cache["selected_model"]).split(", from")[0]}*]'
+        cache['messages'].append({"role": "assistant", "content": response, "signature": model_signature})

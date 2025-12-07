@@ -2,9 +2,9 @@ import streamlit as st
 import pandas as pd
 import xml.etree.ElementTree as ET
 import os
-from utils import model_name_format, stream_generator, Cache
+from utils import get_user_cache
 
-cache = Cache()
+cache = get_user_cache()
 
 cache['homepage_visited'] = True
 

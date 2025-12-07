@@ -1,26 +1,13 @@
 import streamlit as st
+import uuid
+from streamlit_cookies_controller import CookieController
 from collections.abc import MutableMapping
 
-@st.cache_resource(ttl=None)
-def _get_cached_cache_object() -> object:
-    class CacheContainer:
-        def __init__(self):
-            self.instance = None
-    return CacheContainer()
+cookies = CookieController()
 
 class Cache(MutableMapping):
-    _internal_cache = {}
-    _container = _get_cached_cache_object()
-
-    def __new__(cls, *args, **kwargs):
-        if cls._container.instance is None:
-            instance = object.__new__(cls)
-            cls._container.instance = instance
-            instance._internal_cache = {}
-        return cls._container.instance
-
     def __init__(self):
-        pass
+        self._internal_cache = {}
 
     def __getitem__(self, key):
         return self._internal_cache[key]
@@ -49,45 +36,21 @@ class Cache(MutableMapping):
             else:
                 raise KeyError(f"Key not found: {key}")
 
-# Streamlit Example Usage
-def example():
-    cache_obj = Cache()
+def get_user_cache() -> Cache:
+    USER_ID_COOKIE_KEY = "streamlit_app_user_id"
+    
+    try:
+        user_id = cookies.get(USER_ID_COOKIE_KEY)
+    except:
+        user_id = None
 
-    st.title("Streamlit Singleton Cache with Conditional Clear 🧠")
-    st.code(f"cache_obj is Cache(): {cache_obj is Cache()}")
+    if user_id is None:
+        new_id = str(uuid.uuid4())
+        cookies.set(USER_ID_COOKIE_KEY, new_id, max_age=10800) 
+        user_id = new_id
 
-    if 'key1' not in cache_obj:
-        cache_obj['key1'] = 'Initial Value'
-        cache_obj['key_to_delete'] = 'Will be deleted'
-        st.info("Cache initialized with 'key1' and 'key_to_delete'.")
-    else:
-        st.success(f"Cache retrieved! 'key1' is: **{cache_obj.get('key1', 'N/A')}**")
+    return _get_user_cache(user_id)    
 
-    st.divider()
-
-    new_value = st.text_input("Enter a new value for 'new_key':", value="Hello Streamlit")
-    if st.button("Add to Cache"):
-        cache_obj['new_key'] = new_value
-        st.success(f"Added 'new_key': {new_value}")
-        st.rerun()
-
-    st.subheader("Current Cache Contents")
-    st.code(str(cache_obj))
-
-    st.subheader("Clear Operations")
-    col1, col2 = st.columns(2)
-
-    with col1:
-        if st.button("Clear 'key_to_delete'"):
-            try:
-                cache_obj.clear('key_to_delete')
-                st.warning("Deleted 'key_to_delete'.")
-                st.rerun()
-            except KeyError as e:
-                st.error(str(e))
-
-    with col2:
-        if st.button("Clear ALL Cache Contents"):
-            cache_obj.clear()
-            st.error("Internal cache cleared completely.")
-            st.rerun()
+@st.cache_resource(ttl=10800)
+def _get_user_cache(user_id: str) -> Cache:
+    return Cache()
