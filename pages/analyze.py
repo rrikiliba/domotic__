@@ -264,5 +264,8 @@ if 'pdf_model' in cache and cache['pdf_model'] is not None and 'pdf_file' in st.
         best_offers = show_compared_to_other_bills()
         show_offers(best_offers)
     else:
-        show_editable_info()
+        try:
+            show_editable_info()
+        except:
+            st.error("Errore analisi bolletta. Riprova più tardi o prova una nuova AI")
                 
