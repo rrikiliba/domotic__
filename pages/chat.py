@@ -56,6 +56,8 @@ if 'messages' not in cache:
 for message in cache['messages']:
     with chat_message(message["role"]):
         st.markdown(message["content"])
+        if 'signature' in message:
+            st.markdown(message['signature'])
 
 latest_message_user = st.empty()
 latest_message_assistant = st.empty()
@@ -133,6 +135,5 @@ if prompt := st.chat_input('Fai le tue domande qui:'):
                 print(e)
                 st.write(response + error)
     finally:
-        model_signature = f'''  
-:gray[*risposta di {model_name_format(cache["selected_model"]).split(", from")[0]}*]'''
-        cache['messages'].append({"role": "assistant", "content": response + model_signature})
+        model_signature = f':gray[*risposta di {model_name_format(cache["selected_model"]).split(", from")[0]}*]'
+        cache['messages'].append({"role": "assistant", "content": response, "signature": model_signature})

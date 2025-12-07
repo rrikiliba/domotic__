@@ -149,100 +149,101 @@ def change_client_type(options:list):
         cache['pdf_content']['resident']  = False
 
 def show_editable_info(): 
-    col1, col2 = st.columns([1, 2])
+    with st.container(border=True):
+        col1, col2 = st.columns([1, 2])
 
-    cache['pdf_content']['fixed_cost']=cache['pdf_content']['total_price']-cache['pdf_content']["taxes"]-cache['pdf_content']['variable_cost']
-    options=['Domestico residente', 'Domestico non residente', 'Business']
+        cache['pdf_content']['fixed_cost']=cache['pdf_content']['total_price']-cache['pdf_content']["taxes"]-cache['pdf_content']['variable_cost']
+        options=['Domestico residente', 'Domestico non residente', 'Business']
 
-    try:
-        index = options.index(cache['pdf_content']['client_type']) 
-    except:
-        index = 0 
-    col1.selectbox("Tipo di customer",options, index, key="customer_type_box",args=(options,),on_change=change_client_type)
-    col1.text_input("Città", cache['pdf_content']['city'].capitalize(), max_chars=15, key='city', args=('city',), on_change=change_value)
+        try:
+            index = options.index(cache['pdf_content']['client_type']) 
+        except:
+            index = 0 
+        col1.selectbox("Tipologia di cliente", options, index, key="customer_type_box",args=(options,),on_change=change_client_type)
+        col1.text_input("Città", cache['pdf_content']['city'].capitalize(), max_chars=15, key='city', args=('city',), on_change=change_value)
 
-    with col2:
-        c1, c2, c3 = st.columns(3, vertical_alignment="bottom")
-        c1.number_input(
-            "Costo Bolletta (€)", 
-            value=float(cache['pdf_content']['total_price']), 
-            step=1.0,
-            format="%.2f",
-            key="total_price",
-            args=("total_price",),
-            on_change=change_value
-        )
-        c2.number_input(
-            "Consumo annuo (kWh)", 
-            value=float(cache['pdf_content']['annual_consume']), 
-            step=10.0,
-            format="%.2f",
-            key="annual_consume",
-            args=("annual_consume",),
-            on_change=change_value
-        )
-        c3.number_input(
-            "Potenza Impegnata (kW)", 
-            value=float(cache['pdf_content']['potenza_impegnata']), 
-            step=0.5,
-            format="%.2f",
-            key="potenza_impegnata",
-            args=("potenza_impegnata",),
-            on_change=change_value
-        )
+        with col2:
+            c1, c2, c3 = st.columns(3, vertical_alignment="bottom")
+            c1.number_input(
+                "Costo Bolletta (€)", 
+                value=float(cache['pdf_content']['total_price']), 
+                step=1.0,
+                format="%.2f",
+                key="total_price",
+                args=("total_price",),
+                on_change=change_value
+            )
+            c2.number_input(
+                "Consumo annuo (kWh)", 
+                value=float(cache['pdf_content']['annual_consume']), 
+                step=10.0,
+                format="%.2f",
+                key="annual_consume",
+                args=("annual_consume",),
+                on_change=change_value
+            )
+            c3.number_input(
+                "Potenza Impegnata (kW)", 
+                value=float(cache['pdf_content']['potenza_impegnata']), 
+                step=0.5,
+                format="%.2f",
+                key="potenza_impegnata",
+                args=("potenza_impegnata",),
+                on_change=change_value
+            )
 
-        c4, c5,c6 = st.columns(3, vertical_alignment="bottom")
-        c4.number_input(
-            "Costo variabile (€)", 
-            value=float(cache['pdf_content']['variable_cost']), 
-            step=0.1,
-            format="%.2f",
-            key="variable_cost",
-            args=("variable_cost",),
-            on_change=change_value
-        )
-        c5.number_input(
-            "Costo IVA + Accise (€)", 
-            value=float(cache['pdf_content']['taxes']), 
-            step=0.1, 
-            format="%.2f",
-            key="taxes",
-            args=("taxes",),
-            on_change=change_value
-        )
-        
-        c7, c8, c9 = st.columns(3, vertical_alignment="bottom")
-        
-        c7.number_input(
-            "Consumi Fascia F1 (€)", 
-            value=float(cache['pdf_content']['f1_consume']), 
-            step=1.0, 
-            format="%.2f",
-            key="f1_consume",
-            args=("f1_consume",),
-            on_change=change_value
-        )
-        c8.number_input(
-            "Consumi Fascia F2 (€)", 
-            value=float(cache['pdf_content']['f2_consume']), 
-            step=1.0, 
-            format="%.2f",
-            key="f2_consume",
-            args=("f2_consume",),
-            on_change=change_value
-        )
-        c9.number_input(
-            "Consumi Fascia F3 (€)", 
-            value=float(cache['pdf_content']['f3_consume']), 
-            step=1.0, 
-            format="%.2f",
-            key="f3_consume",
-            args=("f3_consume",),
-            on_change=change_value
-        )
+            c4, c5,c6 = st.columns(3, vertical_alignment="bottom")
+            c4.number_input(
+                "Costo variabile (€)", 
+                value=float(cache['pdf_content']['variable_cost']), 
+                step=0.1,
+                format="%.2f",
+                key="variable_cost",
+                args=("variable_cost",),
+                on_change=change_value
+            )
+            c5.number_input(
+                "Costo IVA + Accise (€)", 
+                value=float(cache['pdf_content']['taxes']), 
+                step=0.1, 
+                format="%.2f",
+                key="taxes",
+                args=("taxes",),
+                on_change=change_value
+            )
             
-    st.space("small")
-    st.button(label="Conferma i dati", on_click=confirm, type='primary', width="stretch")
+            c7, c8, c9 = st.columns(3, vertical_alignment="bottom")
+            
+            c7.number_input(
+                "Consumi Fascia F1 (€)", 
+                value=float(cache['pdf_content']['f1_consume']), 
+                step=1.0, 
+                format="%.2f",
+                key="f1_consume",
+                args=("f1_consume",),
+                on_change=change_value
+            )
+            c8.number_input(
+                "Consumi Fascia F2 (€)", 
+                value=float(cache['pdf_content']['f2_consume']), 
+                step=1.0, 
+                format="%.2f",
+                key="f2_consume",
+                args=("f2_consume",),
+                on_change=change_value
+            )
+            c9.number_input(
+                "Consumi Fascia F3 (€)", 
+                value=float(cache['pdf_content']['f3_consume']), 
+                step=1.0, 
+                format="%.2f",
+                key="f3_consume",
+                args=("f3_consume",),
+                on_change=change_value
+            )
+                
+        st.space("small")
+        st.button(label="Conferma i dati", on_click=confirm, type='primary', width="stretch")
 
 
 def confirm():

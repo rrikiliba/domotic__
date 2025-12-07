@@ -69,7 +69,8 @@ if 'homepage_visited' in cache and cache['homepage_visited']:
             def change_model():
                 cache['selected_model'] = st.session_state['model_selectbox']
             st.selectbox('Quale LLM dovrebbe essere utilizzato come base?', cache['available_models'], format_func=model_name_format, index=index, help=help, key='model_selectbox', on_change=change_model)
-
+            if st.session_state['model_selectbox'] != cache['selected_model']:
+                st.rerun()
             # if st.button('data print'):
             #     st.json(cache['selected_model'])
 

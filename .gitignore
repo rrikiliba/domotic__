@@ -1,4 +1,5 @@
 .streamlit/secrets.toml
+streamlit_analytics/data.json
 
 # Tmp file to see extracted bill information and other json files
 tmp.json
