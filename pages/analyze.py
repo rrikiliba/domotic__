@@ -1,7 +1,6 @@
 import streamlit as st
 from utils import analysis_offerte as ao
 from utils import model_name_format, pdf_request, get_user_cache 
-import json
 
 cache = get_user_cache()
 
@@ -19,8 +18,6 @@ def upload_bill():
             st.error('Our chatbot couldn\'t analyze your pdf.')
         except Exception as e:
             st.error(e)
-        with open("./parsed_bill.json", "w+") as f:
-            f.write(json.dumps(cache['pdf_content'], indent=4))
 
 def show_info_about_bill():
     cache['pdf_content']['estimated_annual_cost'] = cache['pdf_content']['total_price']*12
