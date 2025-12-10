@@ -1,4 +1,5 @@
 import streamlit as st
+import streamlit_analytics as sta
 from utils import analysis_offerte as ao
 from utils import model_name_format, pdf_request, get_user_cache 
 
@@ -243,11 +244,10 @@ def show_editable_info():
             )
                 
         st.space("small")
-        st.button(label="Conferma i dati", on_click=confirm, type='primary', width="stretch")
-
-
-def confirm():
-    cache['bill_info_confirmed'] = True 
+        if st.button("Conferma i dati", type='primary', width="stretch"):
+            cache['bill_info_confirmed'] = True 
+            sta.stop_tracking(save_to_json='streamlit_analytics/data.json')
+            st.rerun()
 
 with st.container(border=True):
     st.subheader("📋 Analizza la tua bolletta", anchor=False)
@@ -259,7 +259,7 @@ with st.container(border=True):
     model_signature = st.empty()
 
 if 'pdf_model' in cache and cache['pdf_model'] is not None and 'pdf_file' in st.session_state and st.session_state['pdf_file'] is not None:
-    model_signature.write(f':gray[*file analizzato da {model_name_format(cache["selected_model"]).split(", from")[0]}*]')
+    model_signature.write(f':gray[*file analizzato da {model_name_format(cache["pdf_model"]).split(", from")[0]}*]')
     if 'bill_info_confirmed' in cache and cache['bill_info_confirmed'] == True:
         show_info_about_bill()
         best_offers = show_compared_to_other_bills()
@@ -267,6 +267,8 @@ if 'pdf_model' in cache and cache['pdf_model'] is not None and 'pdf_file' in st.
     else:
         try:
             show_editable_info()
-        except:
-            st.error("Errore analisi bolletta. Riprova più tardi o prova una nuova AI")
+        except Exception as e:
+            st.error(f"""Errore analisi bolletta. Riprova più tardi o prova una nuova AI
+:gray[*tipo di errore: ({type(e).__name__.lstrip('(').rstrip(')')})*]""")
+            print(e)
                 
