@@ -114,7 +114,7 @@ def show_results(counts, reset_callback, unsafe_password=None, json_location=Non
                 .resolve_scale(y="independent")
                 .configure_axis(titleFontSize=15, labelFontSize=12, titlePadding=10)
             )
-            st.altair_chart(layer, use_container_width=True)
+            st.altair_chart(layer, width="stretch")
 
         with st.container(border=True):
             # Show widget interactions.
