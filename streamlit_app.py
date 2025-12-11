@@ -82,8 +82,8 @@ if 'homepage_visited' in cache and cache['homepage_visited']:
             st.info('Grazie per il tuo feedback, apprezziamo molto la tua opinione.')
 
 
+footer.load()
 header.load()
 page.run() 
 sta.stop_tracking(save_to_json='streamlit_analytics/data.json')
-footer.load()
 
