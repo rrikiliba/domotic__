@@ -62,7 +62,7 @@ for message in cache['messages']:
 latest_message_user = st.empty()
 latest_message_assistant = st.empty()
 
-if prompt := st.chat_input('Fai le tue domande qui:'):
+if prompt := st.chat_input('Fai le tue domande qui:', disabled=len(cache['messages']) > 25):
 
     cache['messages'].append({"role": "user", "content": prompt})
     with latest_message_user:
@@ -104,7 +104,7 @@ if prompt := st.chat_input('Fai le tue domande qui:'):
     messages = [
         {
             "role": "system",
-            "content": "Sei un assistente utile. Sei esperto in bollette elettriche, consumo energetico, ecc. L'utente potrebbe farti domande relative a quest'area. Devi respingere le domande non correlate a bollette elettriche, piani tariffari, elettrodomestici e consumo generale di elettricità domestica."
+            "content": "Sei un assistente utile. Sei esperto in bollette elettriche, consumo energetico, ecc. L'utente potrebbe farti domande relative a quest'area. Devi respingere le domande non correlate a bollette elettriche, piani tariffari, elettrodomestici e consumo generale di elettricità domestica, e devi rispondere in italiano."
         },
         {
             "role": "system",
@@ -137,3 +137,7 @@ if prompt := st.chat_input('Fai le tue domande qui:'):
     finally:
         model_signature = f':gray[*risposta di {model_name_format(cache["selected_model"]).split(", from")[0]}*]'
         cache['messages'].append({"role": "assistant", "content": response, "signature": model_signature})
+
+if len(cache['messages']) > 25:
+    cache["messages"].append({"role": "assistant", "content": "Hai finito le domande a tua disposizione per questa demo. Ti ringrazio per aver aiutato il team di Domotic!"})
+    st.rerun()

@@ -26,7 +26,7 @@ cache = get_user_cache()
 
 page = st.navigation(pages, position='sidebar' if 'homepage_visited' in cache and cache['homepage_visited'] else 'hidden')
     
-st.set_page_config(page_title="Domotic__", page_icon="", layout='centered' if page.url_path == 'chat' else 'wide')
+st.set_page_config(page_title="Domotic", page_icon="", layout='centered' if page.url_path == 'chat' else 'wide')
 
 # Load csv 
 # if 'csv_content' not in cache:
@@ -82,8 +82,8 @@ if 'homepage_visited' in cache and cache['homepage_visited']:
             st.info('Grazie per il tuo feedback, apprezziamo molto la tua opinione.')
 
 
+footer.load()
 header.load()
 page.run() 
 sta.stop_tracking(save_to_json='streamlit_analytics/data.json')
-footer.load()
 
