@@ -1,8 +1,10 @@
-# ⚡️ Domotic - Smart Energy Assistant
+# Domotic - Smart Energy Assistant
 
 An advanced Streamlit application that combines an **AI Chatbot** for energy advice with a powerful **Electricity Bill Comparator** for the Italian free market.
 
 [![Open in Streamlit](https://static.streamlit.io/badges/streamlit_badge_black_white.svg)](https://domotic.streamlit.app/)
+
+![logo](assets/images/logo.png)
 
 ### How to run it on your own machine
 
