@@ -1,56 +1,41 @@
 import streamlit as st
 import uuid
-from streamlit_cookies_controller import CookieController
-from collections.abc import MutableMapping
+import streamlit as st
+import streamlit.components.v1 as components
+import time 
 
-cookies = CookieController()
+cache = {}
 
-class Cache(MutableMapping):
-    def __init__(self):
-        self._internal_cache = {}
+def set_cookie(name: str, value: str, ttl_days: int):
+    components.html(
+        """
+        <script>
+        function setCookie(name,value,days) {
+            var expires = "";
+            if (days) {
+                var date = new Date();
+                date.setTime(date.getTime() + (days*24*60*60*1000));
+                expires = "; expires=" + date.toUTCString();
+            }
+            document.cookie = name + "=" + (value || "")  + expires + "; path=/";
+        }
+        """ + f"setCookie(\"{name}\", \"{value}\", {ttl_days});\n</script>", 0, 0
+    )
 
-    def __getitem__(self, key):
-        return self._internal_cache[key]
-
-    def __setitem__(self, key, value):
-        self._internal_cache[key] = value
-
-    def __delitem__(self, key):
-        del self._internal_cache[key]
-
-    def __iter__(self):
-        return iter(self._internal_cache)
-
-    def __len__(self):
-        return len(self._internal_cache)
-
-    def __repr__(self):
-        return f"Cache({self._internal_cache})"
-
-    def clear(self, key=None):
-        if key is None:
-            self._internal_cache.clear()
-        else:
-            if key in self._internal_cache:
-                del self._internal_cache[key]
-            else:
-                raise KeyError(f"Key not found: {key}")
-
-global_cache = {}
-
-def get_user_cache() -> Cache:
+def get_user_cache() -> dict:
     USER_ID_COOKIE_KEY = "streamlit_app_user_id"
-    
-    try:
-        user_id = cookies.get(USER_ID_COOKIE_KEY)
-    except:
-        user_id = None
 
-    if user_id is None or len(user_id) == 0:
+    try:
+        user_id = st.session_state['domotic_user_id'] if 'domotic_user_id' in st.session_state else st.context.cookies[USER_ID_COOKIE_KEY]
+        if user_id is None:
+            raise ValueError
+        user_cache = cache[user_id]
+    except:
         new_id = str(uuid.uuid4())
         print(f'new user: {new_id}')
-        cookies.set(USER_ID_COOKIE_KEY, new_id, max_age=10800) 
-        user_id = new_id
-        global_cache[user_id] = Cache()
+        st.session_state['domotic_user_id'] = new_id
+        set_cookie(USER_ID_COOKIE_KEY, new_id, 10800)
 
-    return global_cache[user_id]    
+        cache[new_id] = {}
+        user_cache = cache[new_id]
+    return user_cache

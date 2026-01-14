@@ -49,7 +49,7 @@ if 'messages' not in cache:
     cache['messages'] = [
         {
             'role': 'assistant',
-            'content': 'Ciao! Il mio nome è :blue[Domitico] e sono qui per aiutarti. Sentiti libero di chiedermi qualsiasi cosa riguardo alla tua bolletta elettrica :smile:'
+            'content': 'Ciao! Il mio nome è :blue[Domitico] e sono qui per aiutarti. Sentiti libero di chiedermi qualsiasi cosa riguardo alla tua bolletta elettrica :smile: '
         }
     ]
 
@@ -112,7 +112,7 @@ if prompt := st.chat_input('Fai le tue domande qui:', disabled=len(cache['messag
         },
         {
             "role": "system",
-            "content": "rispondi in formato markdown valido, inoltre se vuoi enfatizzare una o piu` parole, utilizza :green[] per racchiuderle."
+            "content": "rispondi in formato markdown valido, inoltre se vuoi enfatizzare una o piu` parole, utilizza :green[] per racchiuderle se sono positive, :red[] se negative. Usa : per contornare (sia prefisso che suffisso!) le parole che rappresentano emoji, come :wave: o :smile: "
         },
         *messages
     ]

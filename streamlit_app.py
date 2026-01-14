@@ -28,12 +28,6 @@ page = st.navigation(pages, position='sidebar' if 'homepage_visited' in cache an
     
 st.set_page_config(page_title="Domotic", page_icon="", layout='centered' if page.url_path == 'chat' else 'wide')
 
-# Load csv 
-# if 'csv_content' not in cache:
-#     cache['csv_content'] = None
-#     with open('assets/offers/PO_Offerte_E_PLACET_20251113.csv') as csv_file:
-#         cache['csv_content'] = csv_file.read()
-
 # Initialize pdf
 if 'pdf_content' not in cache:
     cache['pdf_content'] = None
@@ -54,12 +48,7 @@ if 'homepage_visited' in cache and cache['homepage_visited']:
         # Display model switch
         with st.container(border=True):
             if 'selected_model' not in cache:
-                for model in cache['available_models']:
-                    if 'gpt-oss' in model['name']: 
-                        cache['selected_model'] = model
-                        break
-                else:
-                    cache['selected_model'] = cache['available_models'][0]
+                cache['selected_model'] = cache['available_models'][0]
 
             selected_model = cache['selected_model']
             index = cache['available_models'].index(selected_model)
@@ -71,8 +60,6 @@ if 'homepage_visited' in cache and cache['homepage_visited']:
             st.selectbox('Quale LLM dovrebbe essere utilizzato come base?', cache['available_models'], format_func=model_name_format, index=index, help=help, key='model_selectbox', on_change=change_model)
             if st.session_state['model_selectbox'] != cache['selected_model']:
                 st.rerun()
-            # if st.button('data print'):
-            #     st.json(cache['selected_model'])
 
         with st.container(border=True):
             st.write('Dicci com\'è stata la tua esperienza:')
