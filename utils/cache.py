@@ -36,6 +36,8 @@ class Cache(MutableMapping):
             else:
                 raise KeyError(f"Key not found: {key}")
 
+global_cache = {}
+
 def get_user_cache() -> Cache:
     USER_ID_COOKIE_KEY = "streamlit_app_user_id"
     
@@ -44,13 +46,11 @@ def get_user_cache() -> Cache:
     except:
         user_id = None
 
-    if user_id is None:
+    if user_id is None or len(user_id) == 0:
         new_id = str(uuid.uuid4())
+        print(f'new user: {new_id}')
         cookies.set(USER_ID_COOKIE_KEY, new_id, max_age=10800) 
         user_id = new_id
+        global_cache[user_id] = Cache()
 
-    return _get_user_cache(user_id)    
-
-@st.cache_resource(ttl=10800)
-def _get_user_cache(user_id: str) -> Cache:
-    return Cache()
+    return global_cache[user_id]    
